@@ -124,8 +124,14 @@ def classify_chunk(bundle: dict, chunk: str) -> tuple[float, list[dict], list[di
     prediction = bundle["binary_model"].predict([chunk])[0]
     if prediction != "vulnerable" or risk_probability < 0.55:
         return risk_probability, [], []
-    threshold = float(bundle.get("category_threshold", 0.4))
-    return risk_probability, _multilabel(bundle["owasp_model"], chunk, bundle["owasp_classes"], threshold), _multilabel(bundle["api_model"], chunk, bundle["api_classes"], threshold)
+    default_thr = float(bundle.get("category_threshold", 0.4))
+    owasp_thr = float(bundle.get("owasp_threshold", default_thr))
+    api_thr = float(bundle.get("api_threshold", default_thr))
+    return (
+        risk_probability,
+        _multilabel(bundle["owasp_model"], chunk, bundle["owasp_classes"], owasp_thr),
+        _multilabel(bundle["api_model"], chunk, bundle["api_classes"], api_thr),
+    )
 
 
 def scan(root: Path, model_path: Path, standards: set[str] | None = None, output: Path | None = None) -> dict:

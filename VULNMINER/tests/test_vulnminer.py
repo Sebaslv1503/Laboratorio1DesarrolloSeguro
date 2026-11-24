@@ -39,6 +39,10 @@ class VULNMINERTests(unittest.TestCase):
             set(assessment["evaluated_api"]) | set(assessment["not_evaluated_api"]),
             set(API_2023),
         )
+        self.assertGreaterEqual(len(assessment["comparison"]), 2)
+        self.assertGreaterEqual(len(assessment["owasp_comparison"]), 2)
+        self.assertGreaterEqual(len(assessment["api_comparison"]), 2)
+        self.assertTrue((ROOT / "reports/model_comparison.csv").is_file())
 
     def test_evidence_reports_line_and_cwe(self):
         code = "def get():\n    return os.system(request.args['cmd'])\n"

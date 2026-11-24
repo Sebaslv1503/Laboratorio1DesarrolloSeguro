@@ -1,7 +1,7 @@
 {
   "tool": "VULNMINER",
   "version": "0.1.0",
-  "generated_at": "2026-11-24T13:59:20.967795+00:00",
+  "generated_at": "2026-11-24T14:56:18.448582+00:00",
   "project_root": "/home/eluce/Projects/uni/SoftwareSeguro/Proyecto1/Laboratorio1DesarrolloSeguro/VULNMINER/examples/demo-microservices",
   "standards": [
     "api2023",
@@ -64,7 +64,7 @@
         {
           "code": "A01:2025",
           "name": "Broken Access Control",
-          "confidence": 0.9122094564314681
+          "confidence": 0.9379512006389817
         }
       ],
       "owasp_api_2023": [
@@ -74,7 +74,7 @@
           "confidence": 0.9741369442472557
         }
       ],
-      "confidence": 0.7568,
+      "confidence": 0.7953,
       "category_confidence": 0.9741,
       "severity_estimate": "high",
       "severity_basis": "Estimación didáctica basada en categorías predichas; no es CVSS ni la probabilidad del modelo.",
@@ -86,33 +86,27 @@
       "classification_basis": "Modelo supervisado aplicado a contexto alrededor de una señal estática; la señal solo aporta evidencia y ubicación."
     },
     {
-      "id": "B58ECE6475F1",
+      "id": "854CA848FAB5",
       "microservice": "api-gateway",
       "file": "api-gateway/src/proxy.js",
       "language": "JavaScript",
       "line": 9,
-      "problem": "Broken Access Control",
+      "problem": "Patrón potencial para revisión manual",
       "evidence": {
         "description": "Asignación masiva desde propiedades de solicitud observada",
         "line_excerpt": "Object.assign(user, req.body);",
         "cwe": "CWE-915"
       },
-      "owasp_top10_2025": [
-        {
-          "code": "A01:2025",
-          "name": "Broken Access Control",
-          "confidence": 0.45137833775990244
-        }
-      ],
+      "owasp_top10_2025": [],
       "owasp_api_2023": [],
-      "confidence": 0.6689,
-      "category_confidence": 0.4514,
-      "severity_estimate": "high",
+      "confidence": 0.7277,
+      "category_confidence": 0.0,
+      "severity_estimate": "medium",
       "severity_basis": "Estimación didáctica basada en categorías predichas; no es CVSS ni la probabilidad del modelo.",
       "recommendations": [
-        "Aplicar autorización en servidor para cada recurso y normalizar rutas antes de usarlas."
+        "Revisar manualmente el contexto del código y validar la ruta de datos."
       ],
-      "status": "requires_manual_review",
+      "status": "unclassified_review_required",
       "classification_basis": "Modelo supervisado aplicado a contexto alrededor de una señal estática; la señal solo aporta evidencia y ubicación."
     },
     {
@@ -129,7 +123,7 @@
       },
       "owasp_top10_2025": [],
       "owasp_api_2023": [],
-      "confidence": 0.6393,
+      "confidence": 0.7068,
       "category_confidence": 0.0,
       "severity_estimate": "medium",
       "severity_basis": "Estimación didáctica basada en categorías predichas; no es CVSS ni la probabilidad del modelo.",
@@ -155,12 +149,12 @@
         {
           "code": "A05:2025",
           "name": "Injection",
-          "confidence": 0.9577095312049964
+          "confidence": 0.9759468392923588
         }
       ],
       "owasp_api_2023": [],
-      "confidence": 0.5939,
-      "category_confidence": 0.9577,
+      "confidence": 0.638,
+      "category_confidence": 0.9759,
       "severity_estimate": "high",
       "severity_basis": "Estimación didáctica basada en categorías predichas; no es CVSS ni la probabilidad del modelo.",
       "recommendations": [
@@ -185,12 +179,12 @@
         {
           "code": "A04:2025",
           "name": "Cryptographic Failures",
-          "confidence": 0.9766564814116812
+          "confidence": 0.9872824926490468
         }
       ],
       "owasp_api_2023": [],
-      "confidence": 0.9714,
-      "category_confidence": 0.9767,
+      "confidence": 0.9914,
+      "category_confidence": 0.9873,
       "severity_estimate": "high",
       "severity_basis": "Estimación didáctica basada en categorías predichas; no es CVSS ni la probabilidad del modelo.",
       "recommendations": [
@@ -215,12 +209,12 @@
         {
           "code": "A08:2025",
           "name": "Software or Data Integrity Failures",
-          "confidence": 0.9580111837194005
+          "confidence": 0.9802395216612505
         }
       ],
       "owasp_api_2023": [],
-      "confidence": 0.8223,
-      "category_confidence": 0.958,
+      "confidence": 0.9345,
+      "category_confidence": 0.9802,
       "severity_estimate": "medium",
       "severity_basis": "Estimación didáctica basada en categorías predichas; no es CVSS ni la probabilidad del modelo.",
       "recommendations": [

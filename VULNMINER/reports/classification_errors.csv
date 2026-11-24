@@ -1,82 +1,4 @@
 source_id,provenance,language,code,label,cwe,prediction,probability_vulnerable,error_type
-BenchmarkTest00088,OWASP Benchmark Java 1.2,Java,"import java.io.IOException;
-import javax.servlet.ServletException;
-import javax.servlet.annotation.WebServlet;
-import javax.servlet.http.HttpServlet;
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
-
-@WebServlet(value = ""/case/BenchmarkCase"")
-public class BenchmarkCase extends HttpServlet {
-
-    private static final long serialVersionUID = 1L;
-
-    @Override
-    public void doGet(HttpServletRequest request, HttpServletResponse response)
-            throws ServletException, IOException {
-        response.setContentType(""text/html;charset=UTF-8"");
-        javax.servlet.http.Cookie userCookie =
-                new javax.servlet.http.Cookie(""BenchmarkCase"", ""whatever"");
-        userCookie.setMaxAge(60 * 3); // Store cookie for 3 minutes
-        userCookie.setSecure(true);
-        userCookie.setHttpOnly(true);
-        userCookie.setPath(request.getRequestURI());
-        userCookie.setDomain(new java.net.URL(request.getRequestURL().toString()).getHost());
-        response.addCookie(userCookie);
-        javax.servlet.RequestDispatcher rd =
-                request.getRequestDispatcher(""/case/BenchmarkCase.html"");
-        rd.include(request, response);
-    }
-
-    @Override
-    public void doPost(HttpServletRequest request, HttpServletResponse response)
-            throws ServletException, IOException {
-        response.setContentType(""text/html;charset=UTF-8"");
-
-        javax.servlet.http.Cookie[] theCookies = request.getCookies();
-
-        String param = ""noCookieValueSupplied"";
-        if (theCookies != null) {
-            for (javax.servlet.http.Cookie theCookie : theCookies) {
-                if (theCookie.getName().equals(""BenchmarkCase"")) {
-                    param = java.net.URLDecoder.decode(theCookie.getValue(), ""UTF-8"");
-                    break;
-                }
-            }
-        }
-
-        String bar = org.owasp.esapi.ESAPI.encoder().encodeForHTML(param);
-
-        byte[] input = new byte[1000];
-        String str = ""?"";
-        Object inputParam = param;
-        if (inputParam instanceof String) str = ((String) inputParam);
-        if (inputParam instanceof java.io.InputStream) {
-            int i = ((java.io.InputStream) inputParam).read(input);
-            if (i == -1) {
-                response.getWriter()
-                        .println(
-                                ""This input source requires a POST, not a GET. Incompatible UI for the InputStream source."");
-                return;
-            }
-            str = new String(input, 0, i);
-        }
-        if ("""".equals(str)) str = ""No cookie value supplied"";
-        javax.servlet.http.Cookie cookie = new javax.servlet.http.Cookie(""SomeCookie"", str);
-
-        cookie.setSecure(true);
-        cookie.setHttpOnly(true);
-        cookie.setPath(request.getRequestURI()); // i.e., set path to JUST this servlet
- 
-        response.addCookie(cookie);
-
-        response.getWriter()
-                .println(
-                        ""Created cookie: 'SomeCookie': with value: '""
-                                + org.owasp.esapi.ESAPI.encoder().encodeForHTML(str)
-                                + ""' and secure flag set to: true"");
-    }
-}",safe,614,vulnerable,0.5162985302196853,false_positive
 BenchmarkTest00169,OWASP Benchmark Java 1.2,Java,"import java.io.IOException;
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
@@ -148,104 +70,7 @@ public class BenchmarkCase extends HttpServlet {
                                 + org.owasp.esapi.ESAPI.encoder().encodeForHTML(str)
                                 + ""' and secure flag set to: false"");
     }
-}",vulnerable,614,safe,0.23041870329964373,false_negative
-BenchmarkTest00357,OWASP Benchmark Java 1.2,Java,"import java.io.IOException;
-import javax.servlet.ServletException;
-import javax.servlet.annotation.WebServlet;
-import javax.servlet.http.HttpServlet;
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
-
-@WebServlet(value = ""/case/BenchmarkCase"")
-public class BenchmarkCase extends HttpServlet {
-
-    private static final long serialVersionUID = 1L;
-
-    @Override
-    public void doGet(HttpServletRequest request, HttpServletResponse response)
-            throws ServletException, IOException {
-        doPost(request, response);
-    }
-
-    @Override
-    public void doPost(HttpServletRequest request, HttpServletResponse response)
-            throws ServletException, IOException {
-        response.setContentType(""text/html;charset=UTF-8"");
-
-        String param = request.getParameter(""BenchmarkCase"");
-        if (param == null) param = """";
-
-        String bar = param;
- 
- 
- 
- 
- 
- 
- 
- 
- 
-
-        try {
-            java.util.Properties benchmarkprops = new java.util.Properties();
-            benchmarkprops.load(
-                    this.getClass().getClassLoader().getResourceAsStream(""benchmark.properties""));
-            String algorithm = benchmarkprops.getProperty(""cryptoAlg2"", ""AES/ECB/PKCS5Padding"");
-            javax.crypto.Cipher c = javax.crypto.Cipher.getInstance(algorithm);
- 
-            javax.crypto.SecretKey key = javax.crypto.KeyGenerator.getInstance(""AES"").generateKey();
-            c.init(javax.crypto.Cipher.ENCRYPT_MODE, key);
- 
-            byte[] input = {(byte) '?'};
-            Object inputParam = bar;
-            if (inputParam instanceof String) input = ((String) inputParam).getBytes();
-            if (inputParam instanceof java.io.InputStream) {
-                byte[] strInput = new byte[1000];
-                int i = ((java.io.InputStream) inputParam).read(strInput);
-                if (i == -1) {
-                    response.getWriter()
-                            .println(
-                                    ""This input source requires a POST, not a GET. Incompatible UI for the InputStream source."");
-                    return;
-                }
-                input = java.util.Arrays.copyOf(strInput, i);
-            }
-            byte[] result = c.doFinal(input);
-
-            java.io.File fileTarget =
-                    new java.io.File(
-                            new java.io.File(org.owasp.benchmark.helpers.Utils.TESTFILES_DIR),
-                            ""passwordFile.txt"");
-            java.io.FileWriter fw =
-                    new java.io.FileWriter(fileTarget, true); // the true will append the new data
-            fw.write(
-                    ""secret_value=""
-                            + org.owasp.esapi.ESAPI.encoder().encodeForBase64(result, true)
-                            + ""\n"");
-            fw.close();
-            response.getWriter()
-                    .println(
-                            ""Sensitive value: '""
-                                    + org.owasp
-                                            .esapi
-                                            .ESAPI
-                                            .encoder()
-                                            .encodeForHTML(new String(input))
-                                    + ""' encrypted and stored<br/>"");
-
-        } catch (java.security.NoSuchAlgorithmException
-                | javax.crypto.NoSuchPaddingException
-                | javax.crypto.IllegalBlockSizeException
-                | javax.crypto.BadPaddingException
-                | java.security.InvalidKeyException e) {
-            response.getWriter()
-                    .println(
-                            ""Problem executing crypto - javax.crypto.Cipher.getInstance(java.lang.String) Test Case"");
-            e.printStackTrace(response.getWriter());
-            throw new ServletException(e);
-        }
-    }
-}",safe,327,vulnerable,0.6599362431932867,false_positive
+}",vulnerable,614,safe,0.1952454690476097,false_negative
 BenchmarkTest00403,OWASP Benchmark Java 1.2,Java,"import java.io.IOException;
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
@@ -307,284 +132,7 @@ public class BenchmarkCase extends HttpServlet {
                                 + org.owasp.esapi.ESAPI.encoder().encodeForHTML(str)
                                 + ""' and secure flag set to: false"");
     }
-}",vulnerable,614,safe,0.2762229155937142,false_negative
-BenchmarkTest00479,OWASP Benchmark Java 1.2,Java,"import java.io.IOException;
-import javax.servlet.ServletException;
-import javax.servlet.annotation.WebServlet;
-import javax.servlet.http.HttpServlet;
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
-
-@WebServlet(value = ""/case/BenchmarkCase"")
-public class BenchmarkCase extends HttpServlet {
-
-    private static final long serialVersionUID = 1L;
-
-    @Override
-    public void doGet(HttpServletRequest request, HttpServletResponse response)
-            throws ServletException, IOException {
-        doPost(request, response);
-    }
-
-    @Override
-    public void doPost(HttpServletRequest request, HttpServletResponse response)
-            throws ServletException, IOException {
-        response.setContentType(""text/html;charset=UTF-8"");
-
-        java.util.Map<String, String[]> map = request.getParameterMap();
-        String param = """";
-        if (!map.isEmpty()) {
-            String[] values = map.get(""BenchmarkCase"");
-            if (values != null) param = values[0];
-        }
-
-        String bar = org.owasp.esapi.ESAPI.encoder().encodeForHTML(param);
-
-        response.setHeader(""X-XSS-Protection"", ""0"");
-        int length = 1;
-        if (bar != null) {
-            length = bar.length();
-            response.getWriter().write(bar.toCharArray(), 0, length);
-        }
-    }
-}",safe,79,vulnerable,0.5443762572241407,false_positive
-BenchmarkTest00618,OWASP Benchmark Java 1.2,Java,"import java.io.IOException;
-import javax.servlet.ServletException;
-import javax.servlet.annotation.WebServlet;
-import javax.servlet.http.HttpServlet;
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
-
-@WebServlet(value = ""/case/BenchmarkCase"")
-public class BenchmarkCase extends HttpServlet {
-
-    private static final long serialVersionUID = 1L;
-
-    @Override
-    public void doGet(HttpServletRequest request, HttpServletResponse response)
-            throws ServletException, IOException {
-        doPost(request, response);
-    }
-
-    @Override
-    public void doPost(HttpServletRequest request, HttpServletResponse response)
-            throws ServletException, IOException {
-        response.setContentType(""text/html;charset=UTF-8"");
-
-        org.owasp.benchmark.helpers.SeparateClassRequest scr =
-                new org.owasp.benchmark.helpers.SeparateClassRequest(request);
-        String param = scr.getTheParameter(""BenchmarkCase"");
-        if (param == null) param = """";
-
-        String bar;
- 
-        int num = 196;
-        if ((500 / 42) + num > 200) bar = param;
-        else bar = ""This should never happen"";
- 
- 
- 
- 
- 
- 
- 
- 
- 
-
-        try {
-            java.util.Properties benchmarkprops = new java.util.Properties();
-            benchmarkprops.load(
-                    this.getClass().getClassLoader().getResourceAsStream(""benchmark.properties""));
-            String algorithm = benchmarkprops.getProperty(""cryptoAlg2"", ""AES/ECB/PKCS5Padding"");
-            javax.crypto.Cipher c = javax.crypto.Cipher.getInstance(algorithm);
- 
-            javax.crypto.SecretKey key = javax.crypto.KeyGenerator.getInstance(""AES"").generateKey();
-            c.init(javax.crypto.Cipher.ENCRYPT_MODE, key);
- 
-            byte[] input = {(byte) '?'};
-            Object inputParam = bar;
-            if (inputParam instanceof String) input = ((String) inputParam).getBytes();
-            if (inputParam instanceof java.io.InputStream) {
-                byte[] strInput = new byte[1000];
-                int i = ((java.io.InputStream) inputParam).read(strInput);
-                if (i == -1) {
-                    response.getWriter()
-                            .println(
-                                    ""This input source requires a POST, not a GET. Incompatible UI for the InputStream source."");
-                    return;
-                }
-                input = java.util.Arrays.copyOf(strInput, i);
-            }
-            byte[] result = c.doFinal(input);
-
-            java.io.File fileTarget =
-                    new java.io.File(
-                            new java.io.File(org.owasp.benchmark.helpers.Utils.TESTFILES_DIR),
-                            ""passwordFile.txt"");
-            java.io.FileWriter fw =
-                    new java.io.FileWriter(fileTarget, true); // the true will append the new data
-            fw.write(
-                    ""secret_value=""
-                            + org.owasp.esapi.ESAPI.encoder().encodeForBase64(result, true)
-                            + ""\n"");
-            fw.close();
-            response.getWriter()
-                    .println(
-                            ""Sensitive value: '""
-                                    + org.owasp
-                                            .esapi
-                                            .ESAPI
-                                            .encoder()
-                                            .encodeForHTML(new String(input))
-                                    + ""' encrypted and stored<br/>"");
-
-        } catch (java.security.NoSuchAlgorithmException
-                | javax.crypto.NoSuchPaddingException
-                | javax.crypto.IllegalBlockSizeException
-                | javax.crypto.BadPaddingException
-                | java.security.InvalidKeyException e) {
-            response.getWriter()
-                    .println(
-                            ""Problem executing crypto - javax.crypto.Cipher.getInstance(java.lang.String) Test Case"");
-            e.printStackTrace(response.getWriter());
-            throw new ServletException(e);
-        }
-    }
-}",safe,327,vulnerable,0.6814951090380338,false_positive
-BenchmarkTest00638,OWASP Benchmark Java 1.2,Java,"import java.io.IOException;
-import javax.servlet.ServletException;
-import javax.servlet.annotation.WebServlet;
-import javax.servlet.http.HttpServlet;
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
-
-@WebServlet(value = ""/case/BenchmarkCase"")
-public class BenchmarkCase extends HttpServlet {
-
-    private static final long serialVersionUID = 1L;
-
-    @Override
-    public void doGet(HttpServletRequest request, HttpServletResponse response)
-            throws ServletException, IOException {
-        doPost(request, response);
-    }
-
-    @Override
-    public void doPost(HttpServletRequest request, HttpServletResponse response)
-            throws ServletException, IOException {
-        response.setContentType(""text/html;charset=UTF-8"");
-
-        org.owasp.benchmark.helpers.SeparateClassRequest scr =
-                new org.owasp.benchmark.helpers.SeparateClassRequest(request);
-        String param = scr.getTheParameter(""BenchmarkCase"");
-        if (param == null) param = """";
-
-        String bar = org.apache.commons.lang.StringEscapeUtils.escapeHtml(param);
-
-        try {
-            java.util.Properties benchmarkprops = new java.util.Properties();
-            benchmarkprops.load(
-                    this.getClass().getClassLoader().getResourceAsStream(""benchmark.properties""));
-            String algorithm = benchmarkprops.getProperty(""hashAlg1"", ""SHA512"");
-            java.security.MessageDigest md = java.security.MessageDigest.getInstance(algorithm);
-            byte[] input = {(byte) '?'};
-            Object inputParam = bar;
-            if (inputParam instanceof String) input = ((String) inputParam).getBytes();
-            if (inputParam instanceof java.io.InputStream) {
-                byte[] strInput = new byte[1000];
-                int i = ((java.io.InputStream) inputParam).read(strInput);
-                if (i == -1) {
-                    response.getWriter()
-                            .println(
-                                    ""This input source requires a POST, not a GET. Incompatible UI for the InputStream source."");
-                    return;
-                }
-                input = java.util.Arrays.copyOf(strInput, i);
-            }
-            md.update(input);
-
-            byte[] result = md.digest();
-            java.io.File fileTarget =
-                    new java.io.File(
-                            new java.io.File(org.owasp.benchmark.helpers.Utils.TESTFILES_DIR),
-                            ""passwordFile.txt"");
-            java.io.FileWriter fw =
-                    new java.io.FileWriter(fileTarget, true); // the true will append the new data
-            fw.write(
-                    ""hash_value=""
-                            + org.owasp.esapi.ESAPI.encoder().encodeForBase64(result, true)
-                            + ""\n"");
-            fw.close();
-            response.getWriter()
-                    .println(
-                            ""Sensitive value '""
-                                    + org.owasp
-                                            .esapi
-                                            .ESAPI
-                                            .encoder()
-                                            .encodeForHTML(new String(input))
-                                    + ""' hashed and stored<br/>"");
-
-        } catch (java.security.NoSuchAlgorithmException e) {
-            System.out.println(""Problem executing hash - TestCase"");
-            throw new ServletException(e);
-        }
-
-        response.getWriter()
-                .println(
-                        ""Hash Test java.security.MessageDigest.getInstance(java.lang.String) executed"");
-    }
-}",vulnerable,328,safe,0.31576050732991234,false_negative
-BenchmarkTest00938,OWASP Benchmark Java 1.2,Java,"import java.io.IOException;
-import javax.servlet.ServletException;
-import javax.servlet.annotation.WebServlet;
-import javax.servlet.http.HttpServlet;
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
-
-@WebServlet(value = ""/case/BenchmarkCase"")
-public class BenchmarkCase extends HttpServlet {
-
-    private static final long serialVersionUID = 1L;
-
-    @Override
-    public void doGet(HttpServletRequest request, HttpServletResponse response)
-            throws ServletException, IOException {
-        doPost(request, response);
-    }
-
-    @Override
-    public void doPost(HttpServletRequest request, HttpServletResponse response)
-            throws ServletException, IOException {
-        response.setContentType(""text/html;charset=UTF-8"");
-
-        org.owasp.benchmark.helpers.SeparateClassRequest scr =
-                new org.owasp.benchmark.helpers.SeparateClassRequest(request);
-        String param = scr.getTheValue(""BenchmarkCase"");
-
-        String bar = """";
-        if (param != null) {
-            bar =
-                    new String(
-                            org.apache.commons.codec.binary.Base64.decodeBase64(
-                                    org.apache.commons.codec.binary.Base64.encodeBase64(
-                                            param.getBytes())));
-        }
-
-        String sql = ""SELECT * from USERS where USERNAME='foo' and PASSWORD='"" + bar + ""'"";
-
-        try {
-            java.sql.Statement statement =
-                    org.owasp.benchmark.helpers.DatabaseHelper.getSqlStatement();
-            statement.execute(sql, new String[] {""username"", ""password""});
-            org.owasp.benchmark.helpers.DatabaseHelper.printResults(statement, sql, response);
-        } catch (java.sql.SQLException e) {
-            if (org.owasp.benchmark.helpers.DatabaseHelper.hideSQLErrors) {
-                response.getWriter().println(""Error processing request."");
-            } else throw new ServletException(e);
-        }
-    }
-}",safe,89,vulnerable,0.5991820769100296,false_positive
+}",vulnerable,614,safe,0.27487117905406244,false_negative
 BenchmarkTest01108,OWASP Benchmark Java 1.2,Java,"import java.io.IOException;
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
@@ -714,7 +262,7 @@ public class BenchmarkCase extends HttpServlet {
             return bar;
         }
     } // end innerclass Test
-} // end DataflowThruInnerClass",safe,327,vulnerable,0.823016084451889,false_positive
+} // end DataflowThruInnerClass",safe,327,vulnerable,0.7010391371521248,false_positive
 BenchmarkTest01546,OWASP Benchmark Java 1.2,Java,"import java.io.IOException;
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
@@ -764,7 +312,7 @@ public class BenchmarkCase extends HttpServlet {
             return bar;
         }
     } // end innerclass Test
-} // end DataflowThruInnerClass",vulnerable,501,safe,0.4967944900576831,false_negative
+} // end DataflowThruInnerClass",vulnerable,501,safe,0.4962587536705067,false_negative
 BenchmarkTest01580,OWASP Benchmark Java 1.2,Java,"import java.io.IOException;
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
@@ -863,227 +411,7 @@ public class BenchmarkCase extends HttpServlet {
             return bar;
         }
     } // end innerclass Test
-} // end DataflowThruInnerClass",vulnerable,328,safe,0.181656673286158,false_negative
-BenchmarkTest01781,OWASP Benchmark Java 1.2,Java,"import java.io.IOException;
-import javax.servlet.ServletException;
-import javax.servlet.annotation.WebServlet;
-import javax.servlet.http.HttpServlet;
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
-
-@WebServlet(value = ""/case/BenchmarkCase"")
-public class BenchmarkCase extends HttpServlet {
-
-    private static final long serialVersionUID = 1L;
-
-    @Override
-    public void doGet(HttpServletRequest request, HttpServletResponse response)
-            throws ServletException, IOException {
-        doPost(request, response);
-    }
-
-    @Override
-    public void doPost(HttpServletRequest request, HttpServletResponse response)
-            throws ServletException, IOException {
-        response.setContentType(""text/html;charset=UTF-8"");
-
-        org.owasp.benchmark.helpers.SeparateClassRequest scr =
-                new org.owasp.benchmark.helpers.SeparateClassRequest(request);
-        String param = scr.getTheValue(""BenchmarkCase"");
-
-        String bar = new Test().doSomething(request, param);
-
-        double value = new java.util.Random().nextDouble();
-        String rememberMeKey = Double.toString(value).substring(2); // Trim off the 0. at the front.
-
-        String user = ""Donna"";
-        String fullClassName = this.getClass().getName();
-        String testCaseNumber =
-                fullClassName.substring(
-                        fullClassName.lastIndexOf('.') + 1 + ""BenchmarkTest"".length());
-        user += testCaseNumber;
-
-        String cookieName = ""rememberMe"" + testCaseNumber;
-
-        boolean foundUser = false;
-        javax.servlet.http.Cookie[] cookies = request.getCookies();
-        if (cookies != null) {
-            for (int i = 0; !foundUser && i < cookies.length; i++) {
-                javax.servlet.http.Cookie cookie = cookies[i];
-                if (cookieName.equals(cookie.getName())) {
-                    if (cookie.getValue().equals(request.getSession().getAttribute(cookieName))) {
-                        foundUser = true;
-                    }
-                }
-            }
-        }
-
-        if (foundUser) {
-            response.getWriter().println(""Welcome back: "" + user + ""<br/>"");
-        } else {
-            javax.servlet.http.Cookie rememberMe =
-                    new javax.servlet.http.Cookie(cookieName, rememberMeKey);
-            rememberMe.setSecure(true);
-            rememberMe.setHttpOnly(true);
-            rememberMe.setDomain(new java.net.URL(request.getRequestURL().toString()).getHost());
-            rememberMe.setPath(request.getRequestURI()); // i.e., set path to JUST this servlet
- 
-            request.getSession().setAttribute(cookieName, rememberMeKey);
-            response.addCookie(rememberMe);
-            response.getWriter()
-                    .println(
-                            user
-                                    + "" has been remembered with cookie: ""
-                                    + rememberMe.getName()
-                                    + "" whose value is: ""
-                                    + rememberMe.getValue()
-                                    + ""<br/>"");
-        }
-
-        response.getWriter().println(""Weak Randomness Test java.util.Random.nextDouble() executed"");
-    } // end doPost
-
-    private class Test {
-
-        public String doSomething(HttpServletRequest request, String param)
-                throws ServletException, IOException {
-
-            String bar = ""alsosafe"";
-            if (param != null) {
-                java.util.List<String> valuesList = new java.util.ArrayList<String>();
-                valuesList.add(""safe"");
-                valuesList.add(param);
-                valuesList.add(""moresafe"");
-
-                valuesList.remove(0); // remove the 1st safe value
-
-                bar = valuesList.get(1); // get the last 'safe' value
-            }
-
-            return bar;
-        }
-    } // end innerclass Test
-} // end DataflowThruInnerClass",vulnerable,330,safe,0.45214633976916796,false_negative
-BenchmarkTest02003,OWASP Benchmark Java 1.2,Java,"import java.io.IOException;
-import javax.servlet.ServletException;
-import javax.servlet.annotation.WebServlet;
-import javax.servlet.http.HttpServlet;
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
-
-@WebServlet(value = ""/case/BenchmarkCase"")
-public class BenchmarkCase extends HttpServlet {
-
-    private static final long serialVersionUID = 1L;
-
-    @Override
-    public void doGet(HttpServletRequest request, HttpServletResponse response)
-            throws ServletException, IOException {
-        doPost(request, response);
-    }
-
-    @Override
-    public void doPost(HttpServletRequest request, HttpServletResponse response)
-            throws ServletException, IOException {
-        response.setContentType(""text/html;charset=UTF-8"");
-
-        String param = """";
-        java.util.Enumeration<String> names = request.getHeaderNames();
-        while (names.hasMoreElements()) {
-            String name = (String) names.nextElement();
-
-            if (org.owasp.benchmark.helpers.Utils.commonHeaders.contains(name)) {
-                continue; // If standard header, move on to next one
-            }
-
-            java.util.Enumeration<String> values = request.getHeaders(name);
-            if (values != null && values.hasMoreElements()) {
-                param = name; // Grabs the name of the first non-standard header as the parameter
- 
-                break;
-            }
-        }
- 
-
-        String bar = doSomething(request, param);
-
-        int r = new java.util.Random().nextInt();
-        String rememberMeKey = Integer.toString(r);
-
-        String user = ""Ingrid"";
-        String fullClassName = this.getClass().getName();
-        String testCaseNumber =
-                fullClassName.substring(
-                        fullClassName.lastIndexOf('.') + 1 + ""BenchmarkTest"".length());
-        user += testCaseNumber;
-
-        String cookieName = ""rememberMe"" + testCaseNumber;
-
-        boolean foundUser = false;
-        javax.servlet.http.Cookie[] cookies = request.getCookies();
-        if (cookies != null) {
-            for (int i = 0; !foundUser && i < cookies.length; i++) {
-                javax.servlet.http.Cookie cookie = cookies[i];
-                if (cookieName.equals(cookie.getName())) {
-                    if (cookie.getValue().equals(request.getSession().getAttribute(cookieName))) {
-                        foundUser = true;
-                    }
-                }
-            }
-        }
-
-        if (foundUser) {
-            response.getWriter().println(""Welcome back: "" + user + ""<br/>"");
-        } else {
-            javax.servlet.http.Cookie rememberMe =
-                    new javax.servlet.http.Cookie(cookieName, rememberMeKey);
-            rememberMe.setSecure(true);
-            rememberMe.setHttpOnly(true);
-            rememberMe.setPath(request.getRequestURI()); // i.e., set path to JUST this servlet
- 
-            request.getSession().setAttribute(cookieName, rememberMeKey);
-            response.addCookie(rememberMe);
-            response.getWriter()
-                    .println(
-                            user
-                                    + "" has been remembered with cookie: ""
-                                    + rememberMe.getName()
-                                    + "" whose value is: ""
-                                    + rememberMe.getValue()
-                                    + ""<br/>"");
-        }
-
-        response.getWriter().println(""Weak Randomness Test java.util.Random.nextInt() executed"");
-    } // end doPost
-
-    private static String doSomething(HttpServletRequest request, String param)
-            throws ServletException, IOException {
- 
-        String a69278 = param; // assign
-        StringBuilder b69278 = new StringBuilder(a69278); // stick in stringbuilder
-        b69278.append("" SafeStuff""); // append some safe content
-        b69278.replace(
-                b69278.length() - ""Chars"".length(),
-                b69278.length(),
-                ""Chars""); // replace some of the end content
-        java.util.HashMap<String, Object> map69278 = new java.util.HashMap<String, Object>();
-        map69278.put(""key69278"", b69278.toString()); // put in a collection
-        String c69278 = (String) map69278.get(""key69278""); // get it back out
-        String d69278 = c69278.substring(0, c69278.length() - 1); // extract most of it
-        String e69278 =
-                new String(
-                        org.apache.commons.codec.binary.Base64.decodeBase64(
-                                org.apache.commons.codec.binary.Base64.encodeBase64(
-                                        d69278.getBytes()))); // B64 encode and decode it
-        String f69278 = e69278.split("" "")[0]; // split it on a space
-        org.owasp.benchmark.helpers.ThingInterface thing =
-                org.owasp.benchmark.helpers.ThingFactory.createThing();
-        String g69278 = ""barbarians_at_the_gate""; // This is static so this whole flow is 'safe'
-        String bar = thing.doSomething(g69278); // reflection
-
-        return bar;
-    }
-}",vulnerable,330,safe,0.48608378815183323,false_negative
+} // end DataflowThruInnerClass",vulnerable,328,safe,0.2804295859227012,false_negative
 BenchmarkTest02296,OWASP Benchmark Java 1.2,Java,"import java.io.IOException;
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
@@ -1202,7 +530,7 @@ public class BenchmarkCase extends HttpServlet {
 
         return bar;
     }
-}",safe,327,vulnerable,0.7352465066869222,false_positive
+}",safe,327,vulnerable,0.5114600804380625,false_positive
 BenchmarkTest02339,OWASP Benchmark Java 1.2,Java,"import java.io.IOException;
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
@@ -1292,164 +620,7 @@ public class BenchmarkCase extends HttpServlet {
 
         return bar;
     }
-}",vulnerable,614,safe,0.2709541731223758,false_negative
-BenchmarkTest02403,OWASP Benchmark Java 1.2,Java,"import java.io.IOException;
-import javax.servlet.ServletException;
-import javax.servlet.annotation.WebServlet;
-import javax.servlet.http.HttpServlet;
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
-
-@WebServlet(value = ""/case/BenchmarkCase"")
-public class BenchmarkCase extends HttpServlet {
-
-    private static final long serialVersionUID = 1L;
-
-    @Override
-    public void doGet(HttpServletRequest request, HttpServletResponse response)
-            throws ServletException, IOException {
-        doPost(request, response);
-    }
-
-    @Override
-    public void doPost(HttpServletRequest request, HttpServletResponse response)
-            throws ServletException, IOException {
-        response.setContentType(""text/html;charset=UTF-8"");
-
-        org.owasp.benchmark.helpers.SeparateClassRequest scr =
-                new org.owasp.benchmark.helpers.SeparateClassRequest(request);
-        String param = scr.getTheParameter(""BenchmarkCase"");
-        if (param == null) param = """";
-
-        String bar = doSomething(request, param);
-
-        response.setHeader(""X-XSS-Protection"", ""0"");
-        Object[] obj = {""a"", ""b""};
-        response.getWriter().printf(java.util.Locale.US, bar, obj);
-    } // end doPost
-
-    private static String doSomething(HttpServletRequest request, String param)
-            throws ServletException, IOException {
- 
-        String a34270 = param; // assign
-        StringBuilder b34270 = new StringBuilder(a34270); // stick in stringbuilder
-        b34270.append("" SafeStuff""); // append some safe content
-        b34270.replace(
-                b34270.length() - ""Chars"".length(),
-                b34270.length(),
-                ""Chars""); // replace some of the end content
-        java.util.HashMap<String, Object> map34270 = new java.util.HashMap<String, Object>();
-        map34270.put(""key34270"", b34270.toString()); // put in a collection
-        String c34270 = (String) map34270.get(""key34270""); // get it back out
-        String d34270 = c34270.substring(0, c34270.length() - 1); // extract most of it
-        String e34270 =
-                new String(
-                        org.apache.commons.codec.binary.Base64.decodeBase64(
-                                org.apache.commons.codec.binary.Base64.encodeBase64(
-                                        d34270.getBytes()))); // B64 encode and decode it
-        String f34270 = e34270.split("" "")[0]; // split it on a space
-        org.owasp.benchmark.helpers.ThingInterface thing =
-                org.owasp.benchmark.helpers.ThingFactory.createThing();
-        String bar = thing.doSomething(f34270); // reflection
-
-        return bar;
-    }
-}",vulnerable,79,safe,0.42733173599359564,false_negative
-BenchmarkTest02677,OWASP Benchmark Java 1.2,Java,"import java.io.IOException;
-import javax.servlet.ServletException;
-import javax.servlet.annotation.WebServlet;
-import javax.servlet.http.HttpServlet;
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
-
-@WebServlet(value = ""/case/BenchmarkCase"")
-public class BenchmarkCase extends HttpServlet {
-
-    private static final long serialVersionUID = 1L;
-
-    @Override
-    public void doGet(HttpServletRequest request, HttpServletResponse response)
-            throws ServletException, IOException {
-        doPost(request, response);
-    }
-
-    @Override
-    public void doPost(HttpServletRequest request, HttpServletResponse response)
-            throws ServletException, IOException {
-        response.setContentType(""text/html;charset=UTF-8"");
-
-        org.owasp.benchmark.helpers.SeparateClassRequest scr =
-                new org.owasp.benchmark.helpers.SeparateClassRequest(request);
-        String param = scr.getTheValue(""BenchmarkCase"");
-
-        String bar = doSomething(request, param);
-
-        try {
-            java.util.Properties benchmarkprops = new java.util.Properties();
-            benchmarkprops.load(
-                    this.getClass().getClassLoader().getResourceAsStream(""benchmark.properties""));
-            String algorithm = benchmarkprops.getProperty(""hashAlg1"", ""SHA512"");
-            java.security.MessageDigest md = java.security.MessageDigest.getInstance(algorithm);
-            byte[] input = {(byte) '?'};
-            Object inputParam = bar;
-            if (inputParam instanceof String) input = ((String) inputParam).getBytes();
-            if (inputParam instanceof java.io.InputStream) {
-                byte[] strInput = new byte[1000];
-                int i = ((java.io.InputStream) inputParam).read(strInput);
-                if (i == -1) {
-                    response.getWriter()
-                            .println(
-                                    ""This input source requires a POST, not a GET. Incompatible UI for the InputStream source."");
-                    return;
-                }
-                input = java.util.Arrays.copyOf(strInput, i);
-            }
-            md.update(input);
-
-            byte[] result = md.digest();
-            java.io.File fileTarget =
-                    new java.io.File(
-                            new java.io.File(org.owasp.benchmark.helpers.Utils.TESTFILES_DIR),
-                            ""passwordFile.txt"");
-            java.io.FileWriter fw =
-                    new java.io.FileWriter(fileTarget, true); // the true will append the new data
-            fw.write(
-                    ""hash_value=""
-                            + org.owasp.esapi.ESAPI.encoder().encodeForBase64(result, true)
-                            + ""\n"");
-            fw.close();
-            response.getWriter()
-                    .println(
-                            ""Sensitive value '""
-                                    + org.owasp
-                                            .esapi
-                                            .ESAPI
-                                            .encoder()
-                                            .encodeForHTML(new String(input))
-                                    + ""' hashed and stored<br/>"");
-
-        } catch (java.security.NoSuchAlgorithmException e) {
-            System.out.println(""Problem executing hash - TestCase"");
-            throw new ServletException(e);
-        }
-
-        response.getWriter()
-                .println(
-                        ""Hash Test java.security.MessageDigest.getInstance(java.lang.String) executed"");
-    } // end doPost
-
-    private static String doSomething(HttpServletRequest request, String param)
-            throws ServletException, IOException {
-
-        String bar = param;
-        if (param != null && param.length() > 1) {
-            StringBuilder sbxyz68995 = new StringBuilder(param);
-            bar = sbxyz68995.replace(param.length() - ""Z"".length(), param.length(), ""Z"").toString();
-        }
-
-        return bar;
-    }
-}",vulnerable,328,safe,0.34236587268874813,false_negative
+}",vulnerable,614,safe,0.2300440093473691,false_negative
 BenchmarkTest02724,OWASP Benchmark Java 1.2,Java,"import java.io.IOException;
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
@@ -1513,43 +684,7 @@ public class BenchmarkCase extends HttpServlet {
 
         return bar;
     }
-}",safe,501,vulnerable,0.5682628362261029,false_positive
-BenchmarkTest00087,OWASP Benchmark Python 0.1,Python,"from flask import redirect, url_for, request, make_response, render_template
-from helpers.utils import escape_for_html
-
-def init(app):
-
-	@app.route('/case/BenchmarkCase', methods=['GET'])
-	def BenchmarkTest00087_get():
-		return BenchmarkTest00087_post()
-
-	@app.route('/case/BenchmarkCase', methods=['POST'])
-	def BenchmarkTest00087_post():
-		RESPONSE = """"
-
-		param = request.form.get(""BenchmarkCase"")
-		if not param:
-			param = """"
-
-		import configparser
-		
-		bar = 'safe!'
-		conf48394 = configparser.ConfigParser()
-		conf48394.add_section('section48394')
-		conf48394.set('section48394', 'keyA-48394', 'a-Value')
-		conf48394.set('section48394', 'keyB-48394', param)
-		bar = conf48394.get('section48394', 'keyB-48394')
-
-		import os
-		import helpers.utils
-
-		fileName = f'{helpers.utils.TESTFILES_DIR}/{bar}'
-		if os.path.exists(fileName):
-			RESPONSE += ( f""File \'{escape_for_html(fileName)}\' exists."" )
-		else:
-			RESPONSE += ( f""File \'{escape_for_html(fileName)}\' does not exist."" )
-
-		return RESPONSE",vulnerable,22,safe,0.4647336052644324,false_negative
+}",safe,501,vulnerable,0.5927531262305885,false_positive
 BenchmarkTest00096,OWASP Benchmark Python 0.1,Python,"from flask import redirect, url_for, request, make_response, render_template
 from helpers.utils import escape_for_html
 
@@ -1585,7 +720,7 @@ def init(app):
 			f'bar is \'{bar}\' and otherarg is \'{otherarg}\''
 		)
 
-		return RESPONSE",vulnerable,79,safe,0.31353456810905034,false_negative
+		return RESPONSE",vulnerable,79,safe,0.42626886885139587,false_negative
 BenchmarkTest00160,OWASP Benchmark Python 0.1,Python,"from flask import redirect, url_for, request, make_response, render_template
 from helpers.utils import escape_for_html
 
@@ -1623,7 +758,7 @@ def init(app):
 				f'Error executing statement \'{escape_for_html(bar)}\''
 			)
 
-		return RESPONSE",vulnerable,94,safe,0.2862565673603831,false_negative
+		return RESPONSE",vulnerable,94,safe,0.4053399068732493,false_negative
 BenchmarkTest00205,OWASP Benchmark Python 0.1,Python,"from flask import redirect, url_for, request, make_response, render_template
 from helpers.utils import escape_for_html
 
@@ -1678,7 +813,7 @@ def init(app):
 				f'There was an error reading your XML doc:<br>{escape_for_html(bar)}'
 			)
 
-		return RESPONSE",vulnerable,611,safe,0.3010143329132774,false_negative
+		return RESPONSE",vulnerable,611,safe,0.38748503255102007,false_negative
 BenchmarkTest00207,OWASP Benchmark Python 0.1,Python,"from flask import redirect, url_for, request, make_response, render_template
 from helpers.utils import escape_for_html
 
@@ -1730,61 +865,7 @@ def init(app):
 				f'Error parsing XPath Query: \'{escape_for_html(query)}\''
 			)
 
-		return RESPONSE",vulnerable,643,safe,0.2164533717632971,false_negative
-BenchmarkTest00217,OWASP Benchmark Python 0.1,Python,"from flask import redirect, url_for, request, make_response, render_template
-from helpers.utils import escape_for_html
-
-def init(app):
-
-	@app.route('/case/BenchmarkCase', methods=['GET'])
-	def BenchmarkTest00217_get():
-		return BenchmarkTest00217_post()
-
-	@app.route('/case/BenchmarkCase', methods=['POST'])
-	def BenchmarkTest00217_post():
-		RESPONSE = """"
-
-		values = request.form.getlist(""BenchmarkCase"")
-		param = """"
-		if values:
-			param = values[0]
-
-		import configparser
-		
-		bar = 'safe!'
-		conf72771 = configparser.ConfigParser()
-		conf72771.add_section('section72771')
-		conf72771.set('section72771', 'keyA-72771', 'a-Value')
-		conf72771.set('section72771', 'keyB-72771', param)
-		bar = conf72771.get('section72771', 'keyB-72771')
-
-		import lxml.etree
-		import helpers.utils
-		import io
-
-		try:
-			fd = open(f'{helpers.utils.RES_DIR}/employees.xml', 'rb')
-			root = lxml.etree.parse(fd)
-			strIO = io.StringIO()
-			strIO.write('/Employees/Employee[@emplid=\'')
-			strIO.write(bar)
-			strIO.write('\']')
-			query = strIO.getvalue()
-
-			nodes = root.xpath(query)
-			node_strings = []
-			for node in nodes:
-				node_strings.append(' '.join([e.text for e in node]))
-
-			RESPONSE += (
-				f'Your XPATH query results are: <br>[ {', '.join(node_strings)} ]'
-			)
-		except:
-			RESPONSE += (
-				f'Error parsing XPath Query: \'{escape_for_html(query)}\''
-			)
-
-		return RESPONSE",vulnerable,643,safe,0.482996056100196,false_negative
+		return RESPONSE",vulnerable,643,safe,0.25382182955621796,false_negative
 BenchmarkTest00270,OWASP Benchmark Python 0.1,Python,"from flask import redirect, url_for, request, make_response, render_template
 from helpers.utils import escape_for_html
 
@@ -1818,7 +899,7 @@ def init(app):
 				""There was an error loading the configuration""
 			)
 
-		return RESPONSE",vulnerable,502,safe,0.336223764014215,false_negative
+		return RESPONSE",vulnerable,502,safe,0.39517749661535956,false_negative
 BenchmarkTest00349,OWASP Benchmark Python 0.1,Python,"from flask import redirect, url_for, request, make_response, render_template
 from helpers.utils import escape_for_html
 
@@ -1865,7 +946,7 @@ def init(app):
 			f'shared string is {helpers.utils.sharedstr}'
 		)
 
-		return RESPONSE",safe,502,vulnerable,0.5589376883608307,false_positive
+		return RESPONSE",safe,502,vulnerable,0.5251234596994127,false_positive
 BenchmarkTest00364,OWASP Benchmark Python 0.1,Python,"from flask import redirect, url_for, request, make_response, render_template
 from helpers.utils import escape_for_html
 
@@ -1895,262 +976,7 @@ def init(app):
 			'bar is \'{0[bar]}\' and otherarg is \'{0[otherarg]}\''.format(dict)
 		)
 
-		return RESPONSE",safe,79,vulnerable,0.600257929233145,false_positive
-BenchmarkTest00456,OWASP Benchmark Python 0.1,Python,"from flask import redirect, url_for, request, make_response, render_template
-from helpers.utils import escape_for_html
-
-def init(app):
-
-	@app.route('/case/BenchmarkCase', methods=['GET'])
-	def BenchmarkTest00456_get():
-		return BenchmarkTest00456_post()
-
-	@app.route('/case/BenchmarkCase', methods=['POST'])
-	def BenchmarkTest00456_post():
-		RESPONSE = """"
-
-		param = request.headers.get(""BenchmarkCase"")
-		if not param:
-		    param = """"
-
-		import configparser
-		
-		bar = 'safe!'
-		conf10446 = configparser.ConfigParser()
-		conf10446.add_section('section10446')
-		conf10446.set('section10446', 'keyA-10446', 'a-Value')
-		conf10446.set('section10446', 'keyB-10446', param)
-		bar = conf10446.get('section10446', 'keyB-10446')
-
-		import elementpath
-		import xml.etree.ElementTree as ET
-		import helpers.utils
-
-		try:
-			root = ET.parse(f'{helpers.utils.RES_DIR}/employees.xml')
-			query = f""/Employees/Employee[@emplid=\'{bar}\']""
-			nodes = elementpath.select(root, query)
-			node_strings = []
-			for node in nodes:
-				node_strings.append(' '.join([e.text for e in node]))
-
-			RESPONSE += (
-				f'Your XPATH query results are: <br>[ {', '.join(node_strings)} ]'
-			)
-		except:
-			RESPONSE += (
-				f'Error parsing XPath Query: \'{escape_for_html(query)}\''
-			)
-
-		return RESPONSE",vulnerable,643,safe,0.33136716347532774,false_negative
-BenchmarkTest00462,OWASP Benchmark Python 0.1,Python,"from flask import redirect, url_for, request, make_response, render_template
-from helpers.utils import escape_for_html
-
-def init(app):
-
-	@app.route('/case/BenchmarkCase', methods=['GET'])
-	def BenchmarkTest00462_get():
-		return BenchmarkTest00462_post()
-
-	@app.route('/case/BenchmarkCase', methods=['POST'])
-	def BenchmarkTest00462_post():
-		RESPONSE = """"
-
-		param = request.headers.get(""BenchmarkCase"")
-		if not param:
-		    param = """"
-
-		import helpers.ThingFactory
-		
-		thing = helpers.ThingFactory.createThing()
-		bar = thing.doSomething(param)
-
-		import xml.dom.minidom
-		import xml.sax.handler
-
-		try:
-			parser = xml.sax.make_parser()
-
-			parser.setFeature(xml.sax.handler.feature_external_ges, True)
-
-			doc = xml.dom.minidom.parseString(bar, parser)
-
-			out = ''
-			processing = [doc.documentElement]
-			while processing:
-				e = processing.pop(0)
-				if e.nodeType == xml.dom.Node.TEXT_NODE:
-					out += e.data
-				else:
-					processing[:0] = e.childNodes
-
-			RESPONSE += (
-				f'Your XML doc results are: <br>{escape_for_html(out)}'
-			)
-		except:
-			RESPONSE += (
-				f'There was an error reading your XML doc:<br>{escape_for_html(bar)}'
-			)
-
-		return RESPONSE",vulnerable,611,safe,0.41369808109140355,false_negative
-BenchmarkTest00474,OWASP Benchmark Python 0.1,Python,"from flask import redirect, url_for, request, make_response, render_template
-from helpers.utils import escape_for_html
-
-def init(app):
-
-	@app.route('/case/BenchmarkCase', methods=['GET'])
-	def BenchmarkTest00474_get():
-		return BenchmarkTest00474_post()
-
-	@app.route('/case/BenchmarkCase', methods=['POST'])
-	def BenchmarkTest00474_post():
-		RESPONSE = """"
-
-		param = request.headers.get(""BenchmarkCase"")
-		if not param:
-		    param = """"
-
-		possible = ""ABC""
-		guess = possible[1]
-		
-		match guess:
-			case 'A':
-				bar = param
-			case 'B':
-				bar = 'bob'
-			case 'C' | 'D':
-				bar = param
-			case _:
-				bar = 'bob\'s your uncle'
-
-		import random
-		from helpers.utils import mysession
-
-		num = 'BenchmarkCase'[13:]
-		user = f'Nancy{num}'
-		cookie = f'rememberMe{num}'
-		value = str(random.normalvariate())[2:]
-
-		if cookie in mysession and request.cookies.get(cookie) == mysession[cookie]:
-			RESPONSE += (
-				f'Welcome back: {user}<br/>'
-			)
-		else:
-			mysession[cookie] = value
-			RESPONSE += (
-				f'{user} has been remembered with cookie: '
-				f'{cookie} whose value is: {mysession[cookie]}<br/>'
-			)
-
-		return RESPONSE",vulnerable,330,safe,0.345730047110989,false_negative
-BenchmarkTest00516,OWASP Benchmark Python 0.1,Python,"from flask import redirect, url_for, request, make_response, render_template
-from helpers.utils import escape_for_html
-
-def init(app):
-
-	@app.route('/case/BenchmarkCase', methods=['GET'])
-	def BenchmarkTest00516_get():
-		return BenchmarkTest00516_post()
-
-	@app.route('/case/BenchmarkCase', methods=['POST'])
-	def BenchmarkTest00516_post():
-		RESPONSE = """"
-
-		param = """"
-		headers = request.headers.getlist(""BenchmarkCase"")
-		
-		if headers:
-			param = headers[0]
-
-		possible = ""ABC""
-		guess = possible[0]
-		
-		match guess:
-			case 'A':
-				bar = param
-			case 'B':
-				bar = 'bob'
-			case 'C' | 'D':
-				bar = param
-			case _:
-				bar = 'bob\'s your uncle'
-
-		import platform
-		import codecs
-		import helpers.utils
-		from urllib.parse import urlparse
-		from urllib.request import url2pathname
-
-		startURIslashes = """"
-
-		if platform.system() == ""Windows"":
-			startURIslashes = ""/""
-		else:
-			startURIslashes = ""//""
-
-		try:
-			fileURI = urlparse(""file:"" + startURIslashes + helpers.utils.TESTFILES_DIR.replace('\\', '/').replace(' ', '_') + bar)
-			fileTarget = codecs.open(f'{helpers.utils.TESTFILES_DIR}/{bar}','r','utf-8')
-
-			RESPONSE += (
-				f""Access to file: \'{escape_for_html(fileTarget.name)}\' created.""
-			)
-
-			RESPONSE += (
-				"" And file already exists.""
-			)
-		except FileNotFoundError:
-			RESPONSE += (
-				"" But file doesn't exist yet.""
-			)
-		except IOError:
-			pass
-
-		return RESPONSE",vulnerable,22,safe,0.4988172277604748,false_negative
-BenchmarkTest00536,OWASP Benchmark Python 0.1,Python,"from flask import redirect, url_for, request, make_response, render_template
-from helpers.utils import escape_for_html
-
-def init(app):
-
-	@app.route('/case/BenchmarkCase', methods=['GET'])
-	def BenchmarkTest00536_get():
-		return BenchmarkTest00536_post()
-
-	@app.route('/case/BenchmarkCase', methods=['POST'])
-	def BenchmarkTest00536_post():
-		RESPONSE = """"
-
-		param = """"
-		headers = request.headers.getlist(""BenchmarkCase"")
-		
-		if headers:
-			param = headers[0]
-
-		num = 106
-		
-		bar = ""This should never happen"" if (7*42) - num > 200 else param
-
-		import elementpath
-		import xml.etree.ElementTree as ET
-		import helpers.utils
-
-		try:
-			root = ET.parse(f'{helpers.utils.RES_DIR}/employees.xml')
-			query = f""/Employees/Employee[@emplid=\'{bar}\']""
-			nodes = elementpath.select(root, query)
-			node_strings = []
-			for node in nodes:
-				node_strings.append(' '.join([e.text for e in node]))
-
-			RESPONSE += (
-				f'Your XPATH query results are: <br>[ {', '.join(node_strings)} ]'
-			)
-		except:
-			RESPONSE += (
-				f'Error parsing XPath Query: \'{escape_for_html(query)}\''
-			)
-
-		return RESPONSE",vulnerable,643,safe,0.4702864123651679,false_negative
+		return RESPONSE",safe,79,vulnerable,0.6379041859658997,false_positive
 BenchmarkTest00594,OWASP Benchmark Python 0.1,Python,"from flask import redirect, url_for, request, make_response, render_template
 from helpers.utils import escape_for_html
 
@@ -2199,65 +1025,7 @@ def init(app):
 			secure=True,
 			httponly=True)
 
-		return RESPONSE",safe,614,vulnerable,0.7910213609201221,false_positive
-BenchmarkTest00613,OWASP Benchmark Python 0.1,Python,"from flask import redirect, url_for, request, make_response, render_template
-from helpers.utils import escape_for_html
-
-def init(app):
-
-	@app.route('/case/BenchmarkCase', methods=['GET'])
-	def BenchmarkTest00613_get():
-		return BenchmarkTest00613_post()
-
-	@app.route('/case/BenchmarkCase', methods=['POST'])
-	def BenchmarkTest00613_post():
-		RESPONSE = """"
-
-		import helpers.utils
-		param = """"
-		
-		for name in request.headers.keys():
-			if name.lower() in helpers.utils.commonHeaderNames:
-				continue
-		
-			if request.headers.get_all(name):
-				param = name
-				break
-
-		import configparser
-		
-		bar = 'safe!'
-		conf66153 = configparser.ConfigParser()
-		conf66153.add_section('section66153')
-		conf66153.set('section66153', 'keyA-66153', 'a-Value')
-		conf66153.set('section66153', 'keyB-66153', param)
-		bar = conf66153.get('section66153', 'keyB-66153')
-
-		import helpers.utils
-
-		fileName = None
-		fd = None
-
-		try:
-			fileName = f'{helpers.utils.TESTFILES_DIR}/{bar}'
-			fd = open(fileName, 'rb')
-			RESPONSE += (
-				f'The beginning of file: \'{escape_for_html(fileName)}\' is:\n\n'
-				f'{escape_for_html(fd.read(1000).decode('utf-8'))}'
-			)
-		except IOError as e:
-			RESPONSE += (
-				f'Problem reading from file \'{{escape_for_html(fileName)}}\': '
-				f'{escape_for_html(e.strerror)}'
-			)
-		finally:
-			try:
-				if fd is not None:
-					fd.close()
-			except IOError:
-				pass # ""// we tried...""
-
-		return RESPONSE",vulnerable,22,safe,0.4397184618648416,false_negative
+		return RESPONSE",safe,614,vulnerable,0.8389195961579057,false_positive
 BenchmarkTest00650,OWASP Benchmark Python 0.1,Python,"from flask import redirect, url_for, request, make_response, render_template
 from helpers.utils import escape_for_html
 
@@ -2318,7 +1086,7 @@ def init(app):
 			secure=False,
 			httponly=True)
 
-		return RESPONSE",vulnerable,614,safe,0.4530749037113692,false_negative
+		return RESPONSE",vulnerable,614,safe,0.47709319350088586,false_negative
 BenchmarkTest00728,OWASP Benchmark Python 0.1,Python,"from flask import redirect, url_for, request, make_response, render_template
 from helpers.utils import escape_for_html
 
@@ -2358,7 +1126,7 @@ def init(app):
 				f'Error evaluating expression \'{escape_for_html(bar)}\''
 			)
 
-		return RESPONSE",vulnerable,94,safe,0.3087276288447357,false_negative
+		return RESPONSE",vulnerable,94,safe,0.41222516224970335,false_negative
 BenchmarkTest00811,OWASP Benchmark Python 0.1,Python,"from flask import redirect, url_for, request, make_response, render_template
 from helpers.utils import escape_for_html
 
@@ -2404,7 +1172,7 @@ def init(app):
 			secure=True,
 			httponly=True)
 
-		return RESPONSE",safe,614,vulnerable,0.6973046039091308,false_positive
+		return RESPONSE",safe,614,vulnerable,0.6913784669198751,false_positive
 BenchmarkTest00812,OWASP Benchmark Python 0.1,Python,"from flask import redirect, url_for, request, make_response, render_template
 from helpers.utils import escape_for_html
 
@@ -2448,56 +1216,7 @@ def init(app):
 			secure=True,
 			httponly=True)
 
-		return RESPONSE",safe,614,vulnerable,0.7172531017021031,false_positive
-BenchmarkTest00992,OWASP Benchmark Python 0.1,Python,"from flask import redirect, url_for, request, make_response, render_template
-from helpers.utils import escape_for_html
-
-def init(app):
-
-	@app.route('/case/BenchmarkCase', methods=['GET'])
-	def BenchmarkTest00992_get():
-		return BenchmarkTest00992_post()
-
-	@app.route('/case/BenchmarkCase', methods=['POST'])
-	def BenchmarkTest00992_post():
-		RESPONSE = """"
-
-		import urllib.parse
-		
-		query_string = request.query_string.decode('utf-8')
-		paramLoc = query_string.find(""BenchmarkCase"" + '=')
-		if paramLoc == -1:
-			return f""request.query_string did not contain expected parameter \'{""BenchmarkCase""}\'.""
-		param = query_string[paramLoc + len(""BenchmarkCase"") + 1:]
-		ampLoc = param.find('&')
-		if ampLoc != -1:
-			param = param[:ampLoc]
-		
-		param = urllib.parse.unquote_plus(param)
-
-		import html
-		
-		bar = html.escape(param)
-
-		import pickle
-		import base64
-		import helpers.utils
-
-		helpers.utils.sharedstr = ""no pickles to be seen here""
-
-		try:
-			unpickled = pickle.loads(base64.urlsafe_b64decode(bar))
-		except:
-			RESPONSE += (
-				'Unpickling failed!'
-			)
-			return RESPONSE
-
-		RESPONSE += (
-			f'shared string is {helpers.utils.sharedstr}'
-		)
-
-		return RESPONSE",vulnerable,502,safe,0.4745867223343361,false_negative
+		return RESPONSE",safe,614,vulnerable,0.7593443116454323,false_positive
 BenchmarkTest01040,OWASP Benchmark Python 0.1,Python,"from flask import redirect, url_for, request, make_response, render_template
 from helpers.utils import escape_for_html
 
@@ -2538,102 +1257,7 @@ def init(app):
 				f'{cookie} whose value is: {mysession[cookie]}<br/>'
 			)
 
-		return RESPONSE",vulnerable,330,safe,0.3228073860731891,false_negative
-BenchmarkTest01041,OWASP Benchmark Python 0.1,Python,"from flask import redirect, url_for, request, make_response, render_template
-from helpers.utils import escape_for_html
-
-def init(app):
-
-	@app.route('/case/BenchmarkCase', methods=['GET'])
-	def BenchmarkTest01041_get():
-		return BenchmarkTest01041_post()
-
-	@app.route('/case/BenchmarkCase', methods=['POST'])
-	def BenchmarkTest01041_post():
-		RESPONSE = """"
-
-		parts = request.path.split(""/"")
-		param = parts[1]
-		if not param:
-			param = """"
-
-		bar = """"
-		if param:
-			lst = []
-			lst.append('safe')
-			lst.append(param)
-			lst.append('moresafe')
-			lst.pop(0)
-			bar = lst[0]
-
-		import random
-		from helpers.utils import mysession
-
-		num = 'BenchmarkCase'[13:]
-		user = f'Randy{num}'
-		cookie = f'rememberMe{num}'
-		value = str(random.getrandbits(32))
-
-		if cookie in mysession and request.cookies.get(cookie) == mysession[cookie]:
-			RESPONSE += (
-				f'Welcome back: {user}<br/>'
-			)
-		else:
-			mysession[cookie] = value
-			RESPONSE += (
-				f'{user} has been remembered with cookie: '
-				f'{cookie} whose value is: {mysession[cookie]}<br/>'
-			)
-
-		return RESPONSE",vulnerable,330,safe,0.337154994076893,false_negative
-BenchmarkTest01044,OWASP Benchmark Python 0.1,Python,"from flask import redirect, url_for, request, make_response, render_template
-from helpers.utils import escape_for_html
-
-def init(app):
-
-	@app.route('/case/BenchmarkCase', methods=['GET'])
-	def BenchmarkTest01044_get():
-		return BenchmarkTest01044_post()
-
-	@app.route('/case/BenchmarkCase', methods=['POST'])
-	def BenchmarkTest01044_post():
-		RESPONSE = """"
-
-		parts = request.path.split(""/"")
-		param = parts[1]
-		if not param:
-			param = """"
-
-		bar = """"
-		if param:
-			lst = []
-			lst.append('safe')
-			lst.append(param)
-			lst.append('moresafe')
-			lst.pop(0)
-			bar = lst[0]
-
-		import random
-		import base64
-		from helpers.utils import mysession
-
-		num = 'BenchmarkCase'[13:]
-		user = f'Barbara{num}'
-		cookie = f'rememberMe{num}'
-		value = str(base64.b64encode(random.randbytes(32)))
-
-		if cookie in mysession and request.cookies.get(cookie) == mysession[cookie]:
-			RESPONSE += (
-				f'Welcome back: {user}<br/>'
-			)
-		else:
-			mysession[cookie] = value
-			RESPONSE += (
-				f'{user} has been remembered with cookie: '
-				f'{cookie} whose value is: {mysession[cookie]}<br/>'
-			)
-
-		return RESPONSE",vulnerable,330,safe,0.3494568819762096,false_negative
+		return RESPONSE",vulnerable,330,safe,0.4133462161425401,false_negative
 BenchmarkTest01207,OWASP Benchmark Python 0.1,Python,"from flask import redirect, url_for, request, make_response, render_template
 from helpers.utils import escape_for_html
 
@@ -2674,12 +1298,12 @@ def init(app):
 			secure=True,
 			httponly=True)
 
-		return RESPONSE",safe,614,vulnerable,0.7505669902859615,false_positive
+		return RESPONSE",safe,614,vulnerable,0.8539225849017869,false_positive
 semgrep:dockerfile/security/no-sudo-in-dockerfile.dockerfile:L6,Semgrep Community Rules,Configuration,"FROM ubuntu:20.04
 
 ENV DEBIAN_FRONTEND noninteractive
 
-RUN apt-get update && apt-get upgrade -y",safe,250,vulnerable,0.7063098256315401,false_positive
+RUN apt-get update && apt-get upgrade -y",safe,250,vulnerable,0.8044857716946949,false_positive
 semgrep:dockerfile/security/no-sudo-in-dockerfile.dockerfile:L9,Semgrep Community Rules,Configuration,"RUN apt-get update && apt-get upgrade -y
 
 RUN apt-get install -y sudo
@@ -2688,7 +1312,17 @@ RUN useradd -ms /bin/bash newuser
 
 RUN echo ""newuser ALL=(ALL:ALL) NOPASSWD:ALL"" >> /etc/sudoers
 
-USER newuser",safe,250,vulnerable,0.7783950162260624,false_positive
+USER newuser",safe,250,vulnerable,0.9039932979855466,false_positive
+semgrep:java/java-jwt/security/audit/jwt-decode-without-verify.java:L53,Semgrep Community Rules,Java,"String token = JWT.create()
+                .withIssuer(""auth0"")
+                .sign(algorithm);
+            DecodedJWT jwt = JWT.decode(token);
+
+        } catch (JWTCreationException exception){
+            //Invalid Signing configuration / Couldn't convert Claims.
+        }
+
+    }",vulnerable,345,safe,0.4839033530132218,false_negative
 semgrep:java/jboss/security/seam-log-injection.java:L44,Semgrep Community Rules,Java,"log.info(""Current logged in user : "" + user.getUsername());
     }
 
@@ -2696,31 +1330,14 @@ semgrep:java/jboss/security/seam-log-injection.java:L44,Semgrep Community Rules,
         log.info(""Current logged in user : #0"", user.getUsername());
     }
 
-}",safe,95,vulnerable,0.7218369970323611,false_positive
-semgrep:java/lang/security/audit/command-injection-formatted-runtime-call.java:L40,Semgrep Community Rules,Java,"r.exec(""echo 'blah'"");
-    }
-
-    public void okTest2(String input) {
-        Runtime.getRuntime().loadLibrary(""lib.dll"");
-    }
-
-    public void test6(String input) {
-        String[] envp = new String[]{""-c""};",safe,78,vulnerable,0.5465442846445905,false_positive
-semgrep:java/lang/security/audit/crypto/use-of-rc2.java:L8,Semgrep Community Rules,Java,"Cipher.getInstance(""RC2"");
-  }
-
-  public void useofRC2b() {
-    useCipher(Cipher.getInstance(""RC2""));
-  }
-
-  public void ok() {",vulnerable,327,safe,0.47942647708477504,false_negative
+}",safe,95,vulnerable,0.822620404847835,false_positive
 semgrep:java/lang/security/audit/crypto/use-of-rc4.java:L13,Semgrep Community Rules,Java,"useCipher(Cipher.getInstance(""RC4""));
   }
 
   public void ok() {
     Cipher.getInstance(""AES/CBC/PKCS7PADDING"");
   }
-}",safe,327,vulnerable,0.8475224993182282,false_positive
+}",safe,327,vulnerable,0.849771028023343,false_positive
 semgrep:java/lang/security/audit/http-response-splitting.java:L25,Semgrep Community Rules,Java,"response.addCookie(cookie);
     }
 
@@ -2731,7 +1348,7 @@ semgrep:java/lang/security/audit/http-response-splitting.java:L25,Semgrep Commun
     }
 
     @RequestMapping(value = ""/{name}/{book}"", method = RequestMethod.POST)
-    @PreAuthorize(Permissions.USER)",safe,113,vulnerable,0.6091081607485036,false_positive
+    @PreAuthorize(Permissions.USER)",safe,113,vulnerable,0.5737326309713437,false_positive
 semgrep:java/lang/security/audit/http-response-splitting.java:L36,Semgrep Community Rules,Java,"@PreAuthorize(Permissions.USER)
     @ResponseBody
     public void loadBook(@PathVariable final String name, @PathVariable final String book, HttpServletResponse response) throws APIException {
@@ -2739,7 +1356,7 @@ semgrep:java/lang/security/audit/http-response-splitting.java:L36,Semgrep Commun
         Cookie cookie = new Cookie(""sess"", ""1234"");
         response.addCookie(cookie);
     }
-}",safe,113,vulnerable,0.7490937938267607,false_positive
+}",safe,113,vulnerable,0.7765577941568558,false_positive
 semgrep:java/lang/security/audit/md5-used-as-password.java:L60,Semgrep Community Rules,Java,"String salt = RandomUtil.createSalt();
         MessageDigest md = MessageDigest.getInstance(""SHA-256"");
         md.update(user.getPassword());
@@ -2750,7 +1367,7 @@ semgrep:java/lang/security/audit/md5-used-as-password.java:L60,Semgrep Community
         user.setSalt(salt);
         service.addUser(user);
         return new Result<>(user);
-    }",safe,327,vulnerable,0.5091838060733589,false_positive
+    }",safe,327,vulnerable,0.547811741602204,false_positive
 semgrep:java/lang/security/audit/ognl-injection.java:L32,Semgrep Community Rules,Java,"public void unsafeOgnlReflectionProvider3(String input, OgnlTextParser reflectionProvider) throws IntrospectionException, ReflectionException {
         reflectionProvider.evaluate( input );
     }
@@ -2758,35 +1375,20 @@ semgrep:java/lang/security/audit/ognl-injection.java:L32,Semgrep Community Rules
     public void safeOgnlReflectionProvider1(OgnlReflectionProvider reflectionProvider, Class type) throws IntrospectionException, ReflectionException {
         String input = ""thisissafe"";
         reflectionProvider.getGetMethod(type, input);
-    }",safe,94,vulnerable,0.6913218075962807,false_positive
-semgrep:java/lang/security/audit/script-engine-injection.java:L24,Semgrep Community Rules,Java,"ScriptEngine scriptEngine = scriptEngineManager.getEngineByExtension(""js"");
-        Object result = scriptEngine.eval(""test=1;"" + userInput);
-    }
-
-    public static void scriptingSafe() throws ScriptException {
-        ScriptEngineManager scriptEngineManager = new ScriptEngineManager();
-        ScriptEngine scriptEngine = scriptEngineManager.getEngineByExtension(""js"");
-        String code = ""var test=3;test=test*2;"";
-        Object result = scriptEngine.eval(code);
-    }
-}",safe,94,vulnerable,0.5049378861853753,false_positive
+    }",safe,94,vulnerable,0.7673783053419844,false_positive
 semgrep:java/lang/security/audit/sqli/hibernate-sqli.java:L29,Semgrep Community Rules,Java,"criteria.add(Restrictions.sqlRestriction(""param1  = ? and param2 = "" + input,new String[] {input}, new Type[] {StandardBasicTypes.STRING}));
 
         criteria.add(Restrictions.sqlRestriction(""test=1234""));
 
-        final String localSafe = ""where id=1337"";",safe,89,vulnerable,0.6615833124370903,false_positive
-semgrep:java/lang/security/audit/sqli/hibernate-sqli.java:L37,Semgrep Community Rules,Java,"session.createQuery(""select t from UserEntity t "" + localSafe);
-
-        final String localSql = ""select * from TestEntity "" + localSafe;
-        session.createSQLQuery(localSql);",safe,89,vulnerable,0.5067692037451687,false_positive
+        final String localSafe = ""where id=1337"";",safe,89,vulnerable,0.7272645919135116,false_positive
 semgrep:java/lang/security/audit/sqli/hibernate-sqli.java:L40,Semgrep Community Rules,Java,"session.createSQLQuery(localSql);
 
-        criteria.add(Restrictions.sqlRestriction(""param1  = ?"",input, StandardBasicTypes.STRING));",safe,89,vulnerable,0.6045538182769983,false_positive
+        criteria.add(Restrictions.sqlRestriction(""param1  = ?"",input, StandardBasicTypes.STRING));",safe,89,vulnerable,0.6279423622691691,false_positive
 semgrep:java/lang/security/audit/sqli/hibernate-sqli.java:L42,Semgrep Community Rules,Java,"criteria.add(Restrictions.sqlRestriction(""param1  = ?"",input, StandardBasicTypes.STRING));
         criteria.add(Restrictions.sqlRestriction(""param1  = ? and param2 = ?"", new String[] {input}, new Type[] {StandardBasicTypes.STRING}));
 
     }
-}",safe,89,vulnerable,0.6432509387882552,false_positive
+}",safe,89,vulnerable,0.6808237477146546,false_positive
 semgrep:java/lang/security/audit/tainted-ldapi-from-http-request.java:L337,Semgrep Community Rules,Java,"Object[] filters = new Object[] {""The streetz 4 Ms bar""};
             // System.out.println(""Filter "" + filter);
             boolean found = false;
@@ -2797,7 +1399,7 @@ semgrep:java/lang/security/audit/tainted-ldapi-from-http-request.java:L337,Semgr
                         (javax.naming.directory.SearchResult) results.next();
                 javax.naming.directory.Attributes attrs = sr.getAttributes();
 
-                javax.naming.directory.Attribute attr = attrs.get(""uid"");",safe,90,vulnerable,0.6546485919252087,false_positive
+                javax.naming.directory.Attribute attr = attrs.get(""uid"");",safe,90,vulnerable,0.708700320009029,false_positive
 semgrep:java/lang/security/do-privileged-use.java:L5,Semgrep Community Rules,Java,"import java.security.*;
 
 public class NoReturnNoException {
@@ -2808,7 +1410,7 @@ public class NoReturnNoException {
             System.loadLibrary(""awt"");
             return null; // nothing to return
         }
-    }",vulnerable,269,safe,0.38429647045813403,false_negative
+    }",vulnerable,269,safe,0.2936120181922644,false_negative
 semgrep:java/lang/security/do-privileged-use.java:L33,Semgrep Community Rules,Java,"}
         });
 
@@ -2819,7 +1421,7 @@ semgrep:java/lang/security/do-privileged-use.java:L33,Semgrep Community Rules,Ja
                 System.loadLibrary(""awt"");
                 return null; // nothing to return
             }
-        );",vulnerable,269,safe,0.44609060124402006,false_negative
+        );",vulnerable,269,safe,0.3125619063284865,false_negative
 semgrep:java/lang/security/insecure-jms-deserialization.java:L59,Semgrep Community Rules,Java,"Object o = msg.getObject(); // variant 1 : calling getObject method directly on an ObjectMessage object
                 logger.info(""o="" + o);
 
@@ -2829,9 +1431,9 @@ semgrep:java/lang/security/insecure-jms-deserialization.java:L59,Semgrep Communi
                 isb.StoreIncome(income);
             } else {
                 logger.error(""onMessage received an invalid message type"");
-            }",vulnerable,502,safe,0.4631930405596137,false_negative
+            }",vulnerable,502,safe,0.41340906741582933,false_negative
 semgrep:java/spring/security/audit/spring-actuator-fully-enabled.properties:L3,Semgrep Community Rules,Configuration,"foo=bar
-management.endpoints.web.exposure.include=*",vulnerable,200,safe,0.4575166851598833,false_negative
+management.endpoints.web.exposure.include=*",vulnerable,200,safe,0.3980984214744902,false_negative
 semgrep:java/spring/security/audit/spring-csrf-disabled.java:L37,Semgrep Community Rules,Java,"public class WebSecurityConfigOK extends WebSecurityConfigurerAdapter {
     @Override
     protected void configure(HttpSecurity http) throws Exception {
@@ -2841,7 +1443,7 @@ semgrep:java/spring/security/audit/spring-csrf-disabled.java:L37,Semgrep Communi
                 .anyRequest().authenticated()
                 .and()
             .formLogin()
-                .loginPage(""/login"")",safe,352,vulnerable,0.7166099836194441,false_positive
+                .loginPage(""/login"")",safe,352,vulnerable,0.8242192249301993,false_positive
 semgrep:java/spring/security/injection/tainted-system-command.java:L233,Semgrep Community Rules,Java,"public static void test2(@RequestParam String input) {
         String latlonCoords = input;
         Runtime rt = Runtime.getRuntime();
@@ -2851,7 +1453,7 @@ semgrep:java/spring/security/injection/tainted-system-command.java:L233,Semgrep 
     }
 
     public static void test3(@RequestParam String input) {
-        StringBuilder stringBuilder = new StringBuilder(100);",safe,78,vulnerable,0.7699538993361014,false_positive
+        StringBuilder stringBuilder = new StringBuilder(100);",safe,78,vulnerable,0.8633901567985474,false_positive
 semgrep:javascript/angular/security/detect-angular-open-redirect.js:L14,Semgrep Community Rules,JavaScript,"$window.location.href = input + '/app/logout';
 
      //Data is not coming from user input
@@ -2859,11 +1461,11 @@ semgrep:javascript/angular/security/detect-angular-open-redirect.js:L14,Semgrep 
      $window.location.href = ""//untatintedredirect""
    };
 
-});",safe,79,vulnerable,0.8001535192968146,false_positive
+});",safe,79,vulnerable,0.8732030282739618,false_positive
 semgrep:javascript/aws-lambda/security/detect-child-process.js:L12,Semgrep Community Rules,JavaScript,"cp.spawnSync(event['cmd']);
 
     cp.exec('ls')
-};",safe,78,vulnerable,0.7671209762735429,false_positive
+};",safe,78,vulnerable,0.8482645743342166,false_positive
 semgrep:javascript/aws-lambda/security/dynamodb-request-object.js:L6,Semgrep Community Rules,JavaScript,"var documentClient = new AWS.DynamoDB.DocumentClient();
 
 exports.handler = function(event, context) {
@@ -2873,7 +1475,7 @@ exports.handler = function(event, context) {
     }
     console.log(data);
   });
-}",vulnerable,943,safe,0.496053266778571,false_negative
+}",vulnerable,943,safe,0.3939696128699698,false_negative
 semgrep:javascript/aws-lambda/security/dynamodb-request-object.js:L17,Semgrep Community Rules,JavaScript,"}
 
 exports.handler = function(event, context) {
@@ -2884,7 +1486,7 @@ exports.handler = function(event, context) {
     }
     console.log(data);
   });
-}",vulnerable,943,safe,0.31877530303805,false_negative
+}",vulnerable,943,safe,0.14573271302780058,false_negative
 semgrep:javascript/aws-lambda/security/dynamodb-request-object.js:L60,Semgrep Community Rules,JavaScript,"const ddbClient = new DynamoDBClient({ region: 'REGION' });
   const ddbDocClient = DynamoDBDocumentClient.from(ddbClient);
   const params = event.body.params
@@ -2893,16 +1495,16 @@ semgrep:javascript/aws-lambda/security/dynamodb-request-object.js:L60,Semgrep Co
 
 }
 
-exports.handler = function(event, context) {",vulnerable,943,safe,0.40920505345458763,false_negative
+exports.handler = function(event, context) {",vulnerable,943,safe,0.30598551889078407,false_negative
 semgrep:javascript/aws-lambda/security/tainted-eval.js:L2,Semgrep Community Rules,JavaScript,"exports.handler = async (event) => {
-    eval('alert')",safe,95,vulnerable,0.6761178198661137,false_positive
+    eval('alert')",safe,95,vulnerable,0.719675218190492,false_positive
 semgrep:javascript/aws-lambda/security/tainted-sql-string.js:L19,Semgrep Community Rules,JavaScript,"await client.query(""INSERT INTO messages (body) VALUES ('"" + prettyPrint(event) + ""');"")
 
-    await client.query('INSERT INTO messages (body, message) VALUES ($1, $2);', [prettyPrint(event), records[0]]);",safe,89,vulnerable,0.7686390516153165,false_positive
+    await client.query('INSERT INTO messages (body, message) VALUES ($1, $2);', [prettyPrint(event), records[0]]);",safe,89,vulnerable,0.8130829562380252,false_positive
 semgrep:javascript/aws-lambda/security/tainted-sql-string.js:L22,Semgrep Community Rules,JavaScript,"await client.query('INSERT INTO messages (body, message) VALUES ($1, $2);', [prettyPrint(event), records[0]]);
 
     const query2 = 'INSERT INTO messages ' + '(body, message) VALUES ($1, $2);';
-    await client.query(query2, [prettyPrint(event), records[0]]);",safe,89,vulnerable,0.7206717733182283,false_positive
+    await client.query(query2, [prettyPrint(event), records[0]]);",safe,89,vulnerable,0.7015437334312098,false_positive
 semgrep:javascript/aws-lambda/security/tainted-sql-string.js:L26,Semgrep Community Rules,JavaScript,"const query2 = 'INSERT INTO messages ' + '(body, message) VALUES ($1, $2);';
     await client.query(query2, [prettyPrint(event), records[0]]);
 
@@ -2912,7 +1514,7 @@ semgrep:javascript/aws-lambda/security/tainted-sql-string.js:L26,Semgrep Communi
   } catch (error) {
     console.log('Could not add row to postgres, soz');
     console.log(error);
-  }",safe,89,vulnerable,0.6307098758746307,false_positive
+  }",safe,89,vulnerable,0.6019432462541198,false_positive
 semgrep:javascript/express/security/audit/express-jwt-not-revoked.js:L4,Semgrep Community Rules,JavaScript,"var jwt = require('express-jwt');
 var blacklist = require('express-jwt-blacklist');
 
@@ -2922,7 +1524,7 @@ app.get('/ok-protected', jwt({ secret: process.env.SECRET }), function(req, res)
 });
 
 let configSecret = config.get('secret')
-const opts = Object.assign({issuer: 'http://issuer'}, {secret: configSecret})",vulnerable,522,safe,0.39262561584454203,false_negative
+const opts = Object.assign({issuer: 'http://issuer'}, {secret: configSecret})",vulnerable,522,safe,0.2637375419245805,false_negative
 semgrep:javascript/express/security/audit/express-jwt-not-revoked.js:L12,Semgrep Community Rules,JavaScript,"});
 
 let configSecret = config.get('secret')
@@ -2930,14 +1532,14 @@ const opts = Object.assign({issuer: 'http://issuer'}, {secret: configSecret})
 app.get('/ok-protected', jwt(opts), function(req, res) {
     if (!req.user.admin) return res.sendStatus(401);
     res.sendStatus(200);
-});",vulnerable,522,safe,0.38374482480429306,false_negative
+});",vulnerable,522,safe,0.28821325099664585,false_negative
 semgrep:javascript/express/security/audit/remote-property-injection.js:L21,Semgrep Community Rules,JavaScript,"})
 
 app.get('/okTest', function(req, res) {
   var prop = ""$"" + req.query.userControlled
   myObj[prop] = function() {}
   res.send('ok')
-})",safe,522,vulnerable,0.5776787194851608,false_positive
+})",safe,522,vulnerable,0.5375538603094767,false_positive
 semgrep:javascript/express/security/express-xml2json-xxe.js:L9,Semgrep Community Rules,JavaScript,"const port = 3000
 
     app.get('/', (req, res) => {
@@ -2947,7 +1549,7 @@ semgrep:javascript/express/security/express-xml2json-xxe.js:L9,Semgrep Community
     })
 
     app.listen(port, () => console.log(`Example app listening at http://localhost:${port}`))
-}",vulnerable,611,safe,0.27202532458187606,false_negative
+}",vulnerable,611,safe,0.1631448568158878,false_negative
 semgrep:javascript/express/security/express-xml2json-xxe.js:L24,Semgrep Community Rules,JavaScript,"const app = express()
     const port = 3000
 
@@ -2957,14 +1559,14 @@ semgrep:javascript/express/security/express-xml2json-xxe.js:L24,Semgrep Communit
     })
 
     app.listen(port, () => console.log(`Example app listening at http://localhost:${port}`))
-}",vulnerable,611,safe,0.36533499825296323,false_negative
+}",vulnerable,611,safe,0.2609008445301434,false_negative
 semgrep:javascript/fbjs/security/audit/insecure-createnodesfrommarkup.js:L3,Semgrep Community Rules,JavaScript,"function ok1() {
   createNodesFromMarkup('<div></div', function () {
     handleIt();
   })
 }
 
-function bad1(input) {",safe,79,vulnerable,0.619453721735531,false_positive
+function bad1(input) {",safe,79,vulnerable,0.6404718415091899,false_positive
 semgrep:javascript/jsonwebtoken/security/audit/jwt-decode-without-verify.js:L4,Semgrep Community Rules,JavaScript,"const jwt = require('jsonwebtoken');
 
 function notOk(token) {
@@ -2973,7 +1575,7 @@ function notOk(token) {
   }
 }
 
-function ok(token, key) {",vulnerable,345,safe,0.34705895742794424,false_negative
+function ok(token, key) {",vulnerable,345,safe,0.28702293312058347,false_negative
 semgrep:javascript/jsonwebtoken/security/audit/jwt-decode-without-verify.js:L19,Semgrep Community Rules,JavaScript,"}
 }
 
@@ -2982,7 +1584,7 @@ const ok2 = (token, key) => {
   if (jwt.verify(token, true).param === true) {
     console.log('token is valid');
   }
-};",safe,345,vulnerable,0.6921459710547824,false_positive
+};",safe,345,vulnerable,0.7849990675325723,false_positive
 semgrep:javascript/jsonwebtoken/security/audit/jwt-decode-without-verify.jsx:L11,Semgrep Community Rules,JavaScript,"}
 };
 
@@ -2991,7 +1593,7 @@ const ok = (token, key) => {
   if (jwt.decode(token, true).param === true) {
     console.log('token is valid');
   }
-};",safe,345,vulnerable,0.6664849906478323,false_positive
+};",safe,345,vulnerable,0.7381464969189765,false_positive
 semgrep:javascript/jsonwebtoken/security/audit/jwt-exposed-data.js:L14,Semgrep Community Rules,JavaScript,"});
 });
 
@@ -3001,7 +1603,7 @@ User.findOne({name: req.body.name}, function(err, user){
     return token;
 });
 
-User.findOne({name: req.body.name}, function(err, user){",safe,522,vulnerable,0.6510561935858122,false_positive
+User.findOne({name: req.body.name}, function(err, user){",safe,522,vulnerable,0.6641226849251622,false_positive
 semgrep:javascript/jsonwebtoken/security/audit/jwt-exposed-data.js:L21,Semgrep Community Rules,JavaScript,"return token;
 });
 
@@ -3009,14 +1611,14 @@ User.findOne({name: req.body.name}, function(err, user){
     const {name, email} = user
     var token = jwt.sign({name, email}, key, {expiresIn: 60*60*10});
     return token;
-});",safe,522,vulnerable,0.5914663841836493,false_positive
+});",safe,522,vulnerable,0.5784633851787641,false_positive
 semgrep:javascript/jsonwebtoken/security/jwt-none-alg.js:L10,Semgrep Community Rules,JavaScript,"console.log(payload);
     });
 }
 
 const jwt = require(""jsonwebtoken"");
 const secret = 'some-secret';
-const payload = jwt.verify('token-here', secret, { algorithms: ['RS256', 'HS256'] });",safe,327,vulnerable,0.8027574431073341,false_positive
+const payload = jwt.verify('token-here', secret, { algorithms: ['RS256', 'HS256'] });",safe,327,vulnerable,0.9124848218809208,false_positive
 semgrep:javascript/lang/security/audit/detect-non-literal-fs-filename.js:L20,Semgrep Community Rules,JavaScript,"}
 
 function test3(fileName) {
@@ -3027,7 +1629,7 @@ function test3(fileName) {
   });
 }
 
-function okTest1(data) {",vulnerable,22,safe,0.3921821280631997,false_negative
+function okTest1(data) {",vulnerable,22,safe,0.28356554124469935,false_negative
 semgrep:javascript/lang/security/audit/prototype-pollution/prototype-pollution-loop.js:L55,Semgrep Community Rules,JavaScript,"const segs = split(prop);
   const last = segs.pop();
   while (segs.length) {
@@ -3038,7 +1640,7 @@ semgrep:javascript/lang/security/audit/prototype-pollution/prototype-pollution-l
 }
 
 function okTest1(name) {
-  if (name.indexOf('.') === -1) {",vulnerable,915,safe,0.32279083116809637,false_negative
+  if (name.indexOf('.') === -1) {",vulnerable,915,safe,0.2097268733538193,false_negative
 semgrep:javascript/lang/security/audit/prototype-pollution/prototype-pollution-loop.js:L83,Semgrep Community Rules,JavaScript,"name = name.split('.');
 
   const length = name.length;
@@ -3046,19 +1648,16 @@ semgrep:javascript/lang/security/audit/prototype-pollution/prototype-pollution-l
     config = config[i];
   }
   return this;
-}",safe,915,vulnerable,0.66318495124951,false_positive
+}",safe,915,vulnerable,0.6933077082126557,false_positive
 semgrep:javascript/lang/security/audit/spawn-shell-true.js:L3,Semgrep Community Rules,JavaScript,"const {exec, spawnSync} = require('child_process');
 
-const ls = spawn('ls', ['-lh', '/usr'], {shell:true});",vulnerable,78,safe,0.47490932629189553,false_negative
+const ls = spawn('ls', ['-lh', '/usr'], {shell:true});",vulnerable,78,safe,0.3462040791384542,false_negative
 semgrep:javascript/lang/security/audit/spawn-shell-true.js:L6,Semgrep Community Rules,JavaScript,"const ls = spawn('ls', ['-lh', '/usr'], {shell:true});
 
-const pid = spawnSync('ls', ['-lh', '/usr'], {shell: '/bin/sh'});",vulnerable,78,safe,0.4165437438444389,false_negative
-semgrep:javascript/lang/security/audit/spawn-shell-true.js:L9,Semgrep Community Rules,JavaScript,"const pid = spawnSync('ls', ['-lh', '/usr'], {shell: '/bin/sh'});
-
-spawn('ls', ['-lh', '/usr'], {shell:false});",safe,78,vulnerable,0.5083483255225986,false_positive
+const pid = spawnSync('ls', ['-lh', '/usr'], {shell: '/bin/sh'});",vulnerable,78,safe,0.2534339125761132,false_negative
 semgrep:javascript/lang/security/detect-eval-with-expression.js:L4,Semgrep Community Rules,JavaScript,"eval('alert')
 
-window.eval('alert')",safe,95,vulnerable,0.6229238869829722,false_positive
+window.eval('alert')",safe,95,vulnerable,0.6633927866204105,false_positive
 semgrep:javascript/lang/security/insecure-object-assign.js:L9,Semgrep Community Rules,JavaScript,"}
 
 function test2(untrustedInput) {
@@ -3068,7 +1667,7 @@ function test2(untrustedInput) {
 }
 
 function okTest1() {
-  const jsonData = JSON.parse('{""one"": 1}')",vulnerable,601,safe,0.49667507603673955,false_negative
+  const jsonData = JSON.parse('{""one"": 1}')",vulnerable,601,safe,0.48784006065076996,false_negative
 semgrep:javascript/sequelize/security/audit/sequelize-tls-disabled-cert-validation.js:L58,Semgrep Community Rules,JavaScript,"// Example for postgresql
 module.exports = {
 
@@ -3078,34 +1677,14 @@ module.exports = {
     dialect: ""postgres"",
     host: ""127.0.0.1"",
   }
-};",safe,94,vulnerable,0.6093428455924125,false_positive
-semgrep:javascript/wkhtmltoimage/security/audit/wkhtmltoimage-injection.js:L4,Semgrep Community Rules,JavaScript,"var wkhtmltoimage = require('wkhtmltoimage')
-
-const html = '<html></html>'
-wkhtmltoimage.generate(html, { output: 'vuln.jpg' })",safe,918,vulnerable,0.5661941416384342,false_positive
+};",safe,94,vulnerable,0.6591268564785059,false_positive
 semgrep:javascript/xml2json/security/audit/xml2json-xxe.js:L2,Semgrep Community Rules,JavaScript,"function test1(body) {
     const xml2json = require('xml2json')
     const result = xml2json.toJson(body, { object: true, arrayNotation: true })
     return result
 }
 
-function okTest1() {",vulnerable,611,safe,0.4854213899363591,false_negative
-semgrep:python/aws-lambda/security/dangerous-asyncio-create-exec.py:L30,Semgrep Community Rules,Python,"def ok_handler(event, context):
-    program = ""echo""
-    loop = asyncio.new_event_loop()
-    proc = loop.run_until_complete(asyncio.subprocess.create_subprocess_exec(program, [program, ""123""]))
-    loop.run_until_complete(proc.communicate())",safe,78,vulnerable,0.5224701429020718,false_positive
-semgrep:python/aws-lambda/security/dynamodb-filter-injection.py:L14,Semgrep Community Rules,Python,")
-
-  dynamodb_table.scan(
-    Select = 'ALL_ATTRIBUTES', 
-    ScanFilter = {'first_name': event.body.name}
-  )
-
-def new_handler(event, context):
-  client = boto3.client('dynamodb')
-
-  client.scan(",safe,943,vulnerable,0.5201710908748277,false_positive
+function okTest1() {",vulnerable,611,safe,0.4790802598715187,false_negative
 semgrep:python/aws-lambda/security/dynamodb-filter-injection.py:L23,Semgrep Community Rules,Python,"client = boto3.client('dynamodb')
 
   client.scan(
@@ -3114,18 +1693,7 @@ semgrep:python/aws-lambda/security/dynamodb-filter-injection.py:L23,Semgrep Comm
   )
 
   client.query(
-    Select = 'ALL_ATTRIBUTES',",vulnerable,943,safe,0.46493743325558656,false_negative
-semgrep:python/aws-lambda/security/dynamodb-filter-injection.py:L29,Semgrep Community Rules,Python,")
-
-  client.query(
-    Select = 'ALL_ATTRIBUTES', 
-    QueryFilter = {'first_name': event.body.name}
-  )",safe,943,vulnerable,0.5399408122379639,false_positive
-semgrep:python/aws-lambda/security/tainted-code-exec.py:L13,Semgrep Community Rules,Python,"exec(dynamic1.format(event['url']))
-
-    eval(""x = 1; x = x + 2"")
-
-    blah2 = ""import requests; r = requests.get('https://example.com')""",safe,95,vulnerable,0.5406356797395977,false_positive
+    Select = 'ALL_ATTRIBUTES',",vulnerable,943,safe,0.3764601120912701,false_negative
 semgrep:python/aws-lambda/security/tainted-html-response.py:L5,Semgrep Community Rules,Python,"def lambda_handler(event, context):
 	html = f""<div>{event['input']}</div>""
 
@@ -3135,7 +1703,7 @@ semgrep:python/aws-lambda/security/tainted-html-response.py:L5,Semgrep Community
 	bar(foo)
 
 	result = {
-		""statusCode"": 200,",safe,79,vulnerable,0.7555920753298004,false_positive
+		""statusCode"": 200,",safe,79,vulnerable,0.8780613047469775,false_positive
 semgrep:python/aws-lambda/security/tainted-html-response.py:L12,Semgrep Community Rules,Python,"bar(foo)
 
 	result = {
@@ -3145,19 +1713,21 @@ semgrep:python/aws-lambda/security/tainted-html-response.py:L12,Semgrep Communit
 			""Content-Type"": ""text/html""
 		}
 	}
-	return result",vulnerable,79,safe,0.3239389429507619,false_negative
-semgrep:python/cryptography/security/insecure-hash-algorithms-md5.py:L7,Semgrep Community Rules,Python,"hashes.MD5()
-hashes.SHA256()",safe,327,vulnerable,0.8503115264381628,false_positive
-semgrep:python/cryptography/security/insufficient-dsa-key-size.fixed.py:L4,Semgrep Community Rules,Python,"from cryptography.hazmat import backends
-from cryptography.hazmat.primitives.asymmetric import dsa
+	return result",vulnerable,79,safe,0.22755980351523722,false_negative
+semgrep:python/cryptography/security/empty-aes-key.py:L4,Semgrep Community Rules,Python,"from Crypto.Ciphers import AES
 
-dsa.generate_private_key(key_size=2048,
-                         backend=backends.default_backend())",safe,326,vulnerable,0.5385623819088826,false_positive
+def bad1():
+    cipher = AES.new("""", AES.MODE_CFB, iv)
+    msg = iv + cipher.encrypt(b'Attack at dawn')
+
+def ok1(key):",vulnerable,327,safe,0.4925528314261875,false_negative
+semgrep:python/cryptography/security/insecure-hash-algorithms-md5.py:L7,Semgrep Community Rules,Python,"hashes.MD5()
+hashes.SHA256()",safe,327,vulnerable,0.5559513453966239,false_positive
 semgrep:python/cryptography/security/insufficient-dsa-key-size.fixed.py:L8,Semgrep Community Rules,Python,"dsa.generate_private_key(key_size=2048,
                          backend=backends.default_backend())
 
 dsa.generate_private_key(2048,
-                         backend=backends.default_backend())",safe,326,vulnerable,0.5302794020713459,false_positive
+                         backend=backends.default_backend())",safe,326,vulnerable,0.5997761544960443,false_positive
 semgrep:python/distributed/security.fixed.py:L54,Semgrep Community Rules,Python,"security = Security(
                 tls_client_key=self.tls_key,
                 tls_client_cert=self.tls_cert,
@@ -3168,7 +1738,7 @@ semgrep:python/distributed/security.fixed.py:L54,Semgrep Community Rules,Python,
             security = None
 
         self.client = distributed.Client(self.cluster_address, security=security)
-        self.futures = {}",vulnerable,319,safe,0.3578068603356551,false_negative
+        self.futures = {}",vulnerable,319,safe,0.2594530099819726,false_negative
 semgrep:python/distributed/security.py:L54,Semgrep Community Rules,Python,"security = Security(
                 tls_client_key=self.tls_key,
                 tls_client_cert=self.tls_cert,
@@ -3179,7 +1749,7 @@ semgrep:python/distributed/security.py:L54,Semgrep Community Rules,Python,"secur
             security = None
 
         self.client = distributed.Client(self.cluster_address, security=security)
-        self.futures = {}",vulnerable,319,safe,0.43150101165217025,false_negative
+        self.futures = {}",vulnerable,319,safe,0.4214493337350601,false_negative
 semgrep:python/django/security/audit/custom-expression-as-sql.py:L34,Semgrep Community Rules,Python,"if self.has_condition:
             self.sql_template = self.conditional_template
             self.extra['condition'] = self._condition_as_sql(qn, connection)
@@ -3189,7 +1759,7 @@ semgrep:python/django/security/audit/custom-expression-as-sql.py:L34,Semgrep Com
     @property
     def has_condition(self):
         # Warning: bool(QuerySet) will hit the database
-        return self.condition is not None",vulnerable,89,safe,0.4926503769648463,false_negative
+        return self.condition is not None",vulnerable,89,safe,0.43755570743264427,false_negative
 semgrep:python/django/security/audit/unvalidated-password.fixed.py:L27,Semgrep Community Rules,Python,"try:
         validate_password(password)
     except ValidationError as e:
@@ -3199,7 +1769,7 @@ semgrep:python/django/security/audit/unvalidated-password.fixed.py:L27,Semgrep C
 
     user_profile.assertIsNotNone(EmailAuthBackend().authenticate(username=user_profile.example_email('hamlet'), password=password))
 
-def other(user_profile: UserProfile) -> None:",safe,521,vulnerable,0.711835462398336,false_positive
+def other(user_profile: UserProfile) -> None:",safe,521,vulnerable,0.6303233777598005,false_positive
 semgrep:python/django/security/audit/unvalidated-password.fixed.py:L61,Semgrep Community Rules,Python,"user = UserModel._default_manager.get_by_natural_key(username)
         except UserModel.DoesNotExist:
             # Run the default password hasher once to reduce the timing
@@ -3207,7 +1777,7 @@ semgrep:python/django/security/audit/unvalidated-password.fixed.py:L61,Semgrep C
             UserModel().set_password(password)
         else:
             if user.check_password(password) and self.user_can_authenticate(user):
-                return user",safe,521,vulnerable,0.6812143579376151,false_positive
+                return user",safe,521,vulnerable,0.6671047751140692,false_positive
 semgrep:python/django/security/audit/xss/context-autoescape-off.fixed.py:L14,Semgrep Community Rules,Python,"# adapted from https://github.com/mpirnat/lets-be-bad-guys/blob/7cbf11014bfc6dc9e199dc0b8a64e4597bc2338f/badguys/vulnerable/views.py#L95
 
 def file_access(request):
@@ -3217,32 +1787,32 @@ def file_access(request):
 
 ## 03 - XSS
 
-def xss_form(request):",safe,79,vulnerable,0.6504261640735164,false_positive
+def xss_form(request):",safe,79,vulnerable,0.7236839913025204,false_positive
 semgrep:python/django/security/audit/xss/direct-use-of-httpresponse.py:L13,Semgrep Community Rules,Python,"def search_certificates(request):
     user_filter = request.GET.get(""user"", """")
     if not user_filter:
         return HttpResponseBadRequest(""user was not given"")
 
     user = User.objects.get(Q(email=user_filter) | Q(username=user_filter))
-    if user.DoesNotExist:",safe,79,vulnerable,0.7638589569633435,false_positive
+    if user.DoesNotExist:",safe,79,vulnerable,0.8643319765655573,false_positive
 semgrep:python/django/security/audit/xss/direct-use-of-httpresponse.py:L32,Semgrep Community Rules,Python,"return HttpResponse('', status=204)
             return HttpResponse(_res)
         return manageNoEngine()
     except Exception as e:
         return genericApiException(e, engines[uid])
     finally:
-        engines[uid].stoppable = False",vulnerable,79,safe,0.42550472643806636,false_negative
+        engines[uid].stoppable = False",vulnerable,79,safe,0.3065744465440396,false_negative
 semgrep:python/django/security/audit/xss/direct-use-of-httpresponse.py:L53,Semgrep Community Rules,Python,"""This view can not handle method {0}\n"".format(request.method), status=405
         )
 
 def endpoint():
     return HttpResponse(json.dumps({ 'status': 'ERROR', 'error': str(e) }), content_type='text/json')
 
-def dangerous_endpoint():",safe,79,vulnerable,0.587120814888008,false_positive
+def dangerous_endpoint():",safe,79,vulnerable,0.6206810582593899,false_positive
 semgrep:python/django/security/audit/xss/direct-use-of-httpresponse.py:L58,Semgrep Community Rules,Python,"return HttpResponse(json.dumps({ 'status': 'ERROR', 'error': str(e) }), content_type='text/json')
 
 def dangerous_endpoint():
-    return HttpResponse(json.dumps({ 'status': 'ERROR', 'error': str(e) }), content_type='text/html')",vulnerable,79,safe,0.4592313292775307,false_negative
+    return HttpResponse(json.dumps({ 'status': 'ERROR', 'error': str(e) }), content_type='text/html')",vulnerable,79,safe,0.39194667805830324,false_negative
 semgrep:python/django/security/audit/xss/html-magic-method.py:L10,Semgrep Community Rules,Python,"# cf. https://github.com/django/django/blob/d17b380653da5f95885ce53468fe7aac60672841/tests/utils_tests/test_safestring.py#L8
 class customescape(str):
     def __html__(self):
@@ -3250,7 +1820,7 @@ class customescape(str):
         # when it runs.
         return self.replace('<', '<<').replace('>', '>>')
 
-class someotherclass(str):",vulnerable,79,safe,0.2041234986644822,false_negative
+class someotherclass(str):",vulnerable,79,safe,0.12467222129165577,false_negative
 semgrep:python/django/security/globals-as-template-context.py:L15,Semgrep Community Rules,Python,"# adapted from https://github.com/mpirnat/lets-be-bad-guys/blob/7cbf11014bfc6dc9e199dc0b8a64e4597bc2338f/badguys/vulnerable/views.py#L95
 
 def file_access(request):
@@ -3258,13 +1828,13 @@ def file_access(request):
     return render(request, 'vulnerable/injection/file_access.html',
             {'msg': msg})
 
-def bad1(request):",safe,96,vulnerable,0.739527361758084,false_positive
+def bad1(request):",safe,96,vulnerable,0.8319015512418659,false_positive
 semgrep:python/django/security/injection/command/command-injection-os-system.py:L19,Semgrep Community Rules,Python,"url = request.GET['url']
     os.system(""nslookup "" + url)
 
 def ok(request):
     url = request.GET['url']
-    os.system(""echo 'hello'"")",safe,78,vulnerable,0.5946387542042119,false_positive
+    os.system(""echo 'hello'"")",safe,78,vulnerable,0.6350799902419878,false_positive
 semgrep:python/django/security/injection/mass-assignment.py:L7,Semgrep Community Rules,Python,"# Test cases borrowed from https://gist.github.com/jsocol/3217262
 
 def create_whatzit(request):
@@ -3272,7 +1842,7 @@ def create_whatzit(request):
     return render(request, 'created.html')
 
 def update_whatzit(request, id):
-    whatzit = Whatzit.objects.filter(pk=id)",vulnerable,915,safe,0.39447355025494807,false_negative
+    whatzit = Whatzit.objects.filter(pk=id)",vulnerable,915,safe,0.2206031631973547,false_negative
 semgrep:python/django/security/injection/mass-assignment.py:L13,Semgrep Community Rules,Python,"return render(request, 'created.html')
 
 def update_whatzit(request, id):
@@ -3281,16 +1851,7 @@ def update_whatzit(request, id):
     whatzit.save()
     return render(request, 'saved.html')
 
-def good_whatzit(request):",vulnerable,915,safe,0.37357497298421544,false_negative
-semgrep:python/django/security/injection/mass-assignment.py:L19,Semgrep Community Rules,Python,"whatzit.save()
-    return render(request, 'saved.html')
-
-def good_whatzit(request):
-    Whatzit.objects.create(
-        name=request.POST.get('name'),
-        dob=request.POST.get('dob')
-    )
-    return render(request, 'created.html')",safe,915,vulnerable,0.5320436746287327,false_positive
+def good_whatzit(request):",vulnerable,915,safe,0.17325700250800616,false_negative
 semgrep:python/django/security/injection/path-traversal/path-traversal-file-name.py:L40,Semgrep Community Rules,Python,"print(""foo"")
 
 def post3(request, format=None):
@@ -3301,7 +1862,7 @@ def post3(request, format=None):
       connect = connect_init(host)
       commands = ""find %s -name '*.log'"" % (app_log_path)
       result = connect.run(commands).stdout
-      res = []",safe,22,vulnerable,0.6665822852704044,false_positive
+      res = []",safe,22,vulnerable,0.7826849076611622,false_positive
 semgrep:python/django/security/injection/path-traversal/path-traversal-file-name.py:L57,Semgrep Community Rules,Python,"except:
       print(""foo"")
 
@@ -3310,29 +1871,24 @@ def post4(request, format=None):
     host = request.data['host']
     commands = ""find %s -name ."" % (filename)
     result = subprocess.check_output(commands)
-    logging.info(""{} ran command: {}"".format(host, commands))",safe,22,vulnerable,0.8153581422578159,false_positive
+    logging.info(""{} ran command: {}"".format(host, commands))",safe,22,vulnerable,0.9297793253050709,false_positive
 semgrep:python/flask/security/audit/debug-enabled.py:L14,Semgrep Community Rules,Python,"app.run()
 
 def env():
     app.run(""0.0.0.0"", debug=os.environ.get(""DEBUG"", False))
 
-if __name__ == ""__main__"":",safe,489,vulnerable,0.7169593023488912,false_positive
-semgrep:python/flask/security/audit/render-template-string.py:L20,Semgrep Community Rules,Python,"return flask.render_template_string(template), 404
-
-@app.route(""/index"")
-def index():
-    return flask.render_template(""index.html""), 200",safe,96,vulnerable,0.5132921099004695,false_positive
+if __name__ == ""__main__"":",safe,489,vulnerable,0.792589864729017,false_positive
 semgrep:python/flask/security/xss/audit/explicit-unescape-with-markup.py:L17,Semgrep Community Rules,Python,"search_query = '""""'
 
     playlist = request.args.get('p')
     if playlist:
         playlist = Markup('""{0}""').format(playlist.replace('\""', '\\\""').strip())
     else:
-        playlist = '""""'",safe,79,vulnerable,0.8167061580184629,false_positive
+        playlist = '""""'",safe,79,vulnerable,0.9301301725631675,false_positive
 semgrep:python/flask/security/xss/audit/explicit-unescape-with-markup.py:L33,Semgrep Community Rules,Python,"@app.route('/markupsafe')
 def markupsafe_test():
     search_query = request.args.get('q')
-    playlist = Markup(""<i>empty</i>"")",safe,79,vulnerable,0.8214724945077447,false_positive
+    playlist = Markup(""<i>empty</i>"")",safe,79,vulnerable,0.9409617211999086,false_positive
 semgrep:python/jwt/security/jwt-none-alg.py:L9,Semgrep Community Rules,Python,"encoded = jwt.encode({'some': 'payload'}, None, algorithm='none')
     return encoded
 
@@ -3340,7 +1896,7 @@ def bad2(encoded):
     jwt.decode(encoded, None, algorithms=['none'])
     return encoded
 
-def ok(secret_key):",vulnerable,327,safe,0.4970410438286894,false_negative
+def ok(secret_key):",vulnerable,327,safe,0.4376332815228276,false_negative
 semgrep:python/lang/security/audit/conn_recv.py:L7,Semgrep Community Rules,Python,"rx = multiprocessing.connection.Client(('localhost', 12345)).recv()
 
 connection = multiprocessing.connection.Client(
@@ -3348,95 +1904,79 @@ connection = multiprocessing.connection.Client(
 )
 
 output = {}
-connection.send(output)",vulnerable,502,safe,0.44129217476958776,false_negative
+connection.send(output)",vulnerable,502,safe,0.3527524202050895,false_negative
+semgrep:python/lang/security/audit/dangerous-asyncio-shell-audit.py:L29,Semgrep Community Rules,Python,"transport.close()
+
+def vuln2(shell_command):
+    with AsyncEventLoop() as loop:
+        proc = loop.run_until_complete(asyncio.subprocess.create_subprocess_shell(shell_command))
+        loop.run_until_complete(proc.wait())
+
+def ok1():
+    shell_command = 'echo ""Hello world""'
+
+    with AsyncEventLoop() as loop:",vulnerable,78,safe,0.4640357230912205,false_negative
 semgrep:python/lang/security/audit/dangerous-testcapi-run-in-subinterp-audit.py:L13,Semgrep Community Rules,Python,"support.run_in_subinterp(payload)
 
 def okTest(payload: str) -> None:
-    _testcapi.run_in_subinterp(""print('Hello world')"")",safe,95,vulnerable,0.5534876021089725,false_positive
+    _testcapi.run_in_subinterp(""print('Hello world')"")",safe,95,vulnerable,0.502635818344558,false_positive
+semgrep:python/lang/security/audit/formatted-sql-query.py:L38,Semgrep Community Rules,Python,"str_query = ""SELECT first_name, last_name, username FROM customer WHERE username = '%s';"".format(search_term)
+                    # mycust = Customer.query.filter_by(username = search_term).first()
+                    # return jsonify({'Customer': mycust.username, 'First Name': mycust.first_name}),200
+
+                    search_query = db.engine.execute(str_query)
+                    for result in search_query:
+                        results.append(list(result))
+                    print(results)
+                    return jsonify(results),200
+                except Exception as e:
+                    template = '''<html>",vulnerable,89,safe,0.4444364976687198,false_negative
 semgrep:python/lang/security/audit/insecure-transport/ftplib/use-ftp-tls.py:L5,Semgrep Community Rules,Python,"import ftplib
 import ssl
 
 def bad():
     ftpc = ftplib.FTP(""example.com"", ""user"", ""pass"")
 
-def ok():",vulnerable,319,safe,0.4871215585702052,false_negative
-semgrep:python/lang/security/audit/insecure-transport/ftplib/use-ftp-tls.py:L9,Semgrep Community Rules,Python,"ftpc = ftplib.FTP(""example.com"", ""user"", ""pass"")
-
-def ok():
-    ftpc = ftplib.FTP_TLS(""example.com"", ""user"", ""pass"", context=ssl.create_default_context())",safe,319,vulnerable,0.5004115632200953,false_positive
+def ok():",vulnerable,319,safe,0.4608155607999914,false_negative
 semgrep:python/lang/security/audit/insecure-transport/ssl/no-set-ciphers.py:L7,Semgrep Community Rules,Python,"context = ssl.create_default_context()
 
 # cf. https://stackoverflow.com/questions/49774366/how-to-set-ciphers-in-ssl-python-socket
 cipher = 'DHE-RSA-AES128-SHA:DHE-RSA-AES256-SHA:ECDHE-ECDSA-AES128-GCM-SHA256'
-context.set_ciphers(cipher)",vulnerable,326,safe,0.4081218222177811,false_negative
+context.set_ciphers(cipher)",vulnerable,326,safe,0.36276909725631573,false_negative
 semgrep:python/lang/security/audit/insecure-transport/ssl/no-set-ciphers.py:L10,Semgrep Community Rules,Python,"context.set_ciphers(cipher)
 
-print(context.get_ciphers())",safe,326,vulnerable,0.6383905106403749,false_positive
-semgrep:python/lang/security/audit/insecure-transport/urllib/insecure-urlretrieve-ftp.py:L26,Semgrep Community Rules,Python,"def test3(url = ""ftp://example.com""):
-    urlretrieve(url)
-
-def test3_ok(url = ""sftp://example.com""):
-    urlretrieve(url)",safe,319,vulnerable,0.5005211968191369,false_positive
+print(context.get_ciphers())",safe,326,vulnerable,0.8028115706958382,false_positive
 semgrep:python/lang/security/deserialization/avoid-unsafe-ruamel.py:L12,Semgrep Community Rules,Python,"y3 = YAML(typ='safe')
 
-y3 = YAML(typ='unsafe')",vulnerable,502,safe,0.2145773395552258,false_negative
+y3 = YAML(typ='unsafe')",vulnerable,502,safe,0.08255947975856609,false_negative
 semgrep:python/lang/security/deserialization/avoid-unsafe-ruamel.py:L15,Semgrep Community Rules,Python,"y3 = YAML(typ='unsafe')
 
-y4 = YAML(typ='base')",vulnerable,502,safe,0.42981207076581207,false_negative
+y4 = YAML(typ='base')",vulnerable,502,safe,0.3537511524338051,false_negative
 semgrep:python/lang/security/insecure-uuid-version.py:L18,Semgrep Community Rules,Python,"uuid = uuid1() 
 
 import uuid
 def unrelated_function():
-    uuid = uuid4()",safe,330,vulnerable,0.7425584883647736,false_positive
+    uuid = uuid4()",safe,330,vulnerable,0.842140952486892,false_positive
 semgrep:python/lang/security/unverified-ssl-context.py:L4,Semgrep Community Rules,Python,"import ssl
 import httplib.client
 
 context = ssl.create_default_context()
-conn = httplib.client.HTTPSConnection(""123.123.21.21"", context=context)",safe,295,vulnerable,0.6494273444333313,false_positive
+conn = httplib.client.HTTPSConnection(""123.123.21.21"", context=context)",safe,295,vulnerable,0.7485268174803636,false_positive
 semgrep:python/lang/security/use-defused-xml-parse.fixed.py:L2,Semgrep Community Rules,Python,"def bad(input_string):
-    import xml",safe,611,vulnerable,0.7745056678222855,false_positive
+    import xml",safe,611,vulnerable,0.9006517278518118,false_positive
 semgrep:python/lang/security/use-defused-xml-parse.fixed.py:L4,Semgrep Community Rules,Python,"import xml
     from xml.etree import ElementTree
     tree = ElementTree.parse('country_data.xml')
-    root = tree.getroot()",safe,611,vulnerable,0.6437325821100792,false_positive
-semgrep:python/lang/security/use-defused-xml-parse.fixed.py:L9,Semgrep Community Rules,Python,"from xml.etree import ElementTree
-    tree = ElementTree.parse('country_data.xml')
-    root = tree.getroot()
-
-    tree = defusedxml.etree.ElementTree.parse(input_string)
-
-def ok():",vulnerable,611,safe,0.46564121445745604,false_negative
+    root = tree.getroot()",safe,611,vulnerable,0.8138622124250195,false_positive
 semgrep:python/lang/security/use-defused-xml-parse.fixed.py:L15,Semgrep Community Rules,Python,"import defusedxml
     from defusedxml.etree import ElementTree
     tree = ElementTree.parse('country_data.xml')
-    root = tree.getroot()",safe,611,vulnerable,0.6909819973213284,false_positive
+    root = tree.getroot()",safe,611,vulnerable,0.8540084358636282,false_positive
 semgrep:python/lang/security/use-defused-xml-parse.fixed.py:L20,Semgrep Community Rules,Python,"from defusedxml.etree import ElementTree
     tree = ElementTree.parse('country_data.xml')
     root = tree.getroot()
 
-    tree = ElementTree.parse(input_string)",safe,611,vulnerable,0.6717788233658746,false_positive
-semgrep:python/lang/security/use-defused-xml-parse.py:L9,Semgrep Community Rules,Python,"from xml.etree import ElementTree
-    tree = ElementTree.parse('country_data.xml')
-    root = tree.getroot()
-
-    tree = ElementTree.parse(input_string)
-
-def ok():",vulnerable,611,safe,0.45722375665709714,false_negative
-semgrep:python/pyramid/audit/csrf-check-disabled.fixed.py:L21,Semgrep Community Rules,Python,"@view_config(
-    route_name='home_bad1',
-    require_csrf=True,
-    renderer='my_app:templates/mytemplate.jinja2'
-)
-def my_good_home1(request):
-    try:
-        query = request.dbsession.query(models.MyModel)
-        one = query.filter(models.MyModel.name == 'one').one()",safe,352,vulnerable,0.5041784867536955,false_positive
-semgrep:python/pyramid/audit/set-cookie-secure-unsafe-default.py:L48,Semgrep Community Rules,Python,"@view_config(route_name='my_view')
-def my_good_view3(request):
-    resp = exc.HTTPFound(location=request.referer or request.application_url)
-    resp.set_cookie('MY_COOKIE', value='MY_COOKIE_VALUE',
-                    **global_cookie_flags)
-    return resp",safe,614,vulnerable,0.5178670346802555,false_positive
+    tree = ElementTree.parse(input_string)",safe,611,vulnerable,0.8310768731576107,false_positive
 semgrep:yaml/argo/security/argo-workflow-parameter-command-injection.test.yaml:L115,Semgrep Community Rules,Configuration,"env:
           name: MESSAGE
           value: ""{{inputs.parameters.message}}""
@@ -3447,25 +1987,29 @@ semgrep:yaml/argo/security/argo-workflow-parameter-command-injection.test.yaml:L
       inputs:
         parameters:
         - name: message
-      container:",safe,78,vulnerable,0.7796823142755922,false_positive
+      container:",safe,78,vulnerable,0.8902813641785454,false_positive
 semgrep:yaml/argo/security/argo-workflow-parameter-command-injection.test.yaml:L128,Semgrep Community Rules,Configuration,"env:
           - name: MESSAGE
             value: ""{{inputs.parameters.message}}""
         command: [sh, -c]
-        args: [""echo result was: $MESSAGE""]",safe,78,vulnerable,0.7266997937953562,false_positive
+        args: [""echo result was: $MESSAGE""]",safe,78,vulnerable,0.7899052634949449,false_positive
+semgrep:yaml/docker-compose/security/no-new-privileges.test.yaml:L3,Semgrep Community Rules,Configuration,"version: ""3.9""
+services:
+  web:
+    image: nginx:alpine",vulnerable,732,safe,0.37763310549023515,false_negative
 semgrep:yaml/docker-compose/security/no-new-privileges.test.yaml:L6,Semgrep Community Rules,Configuration,"web:
     image: nginx:alpine
   worker:
     image: my-worker-image:latest
     security_opt:
-      - label:user:testuser",vulnerable,732,safe,0.4247592523291059,false_negative
+      - label:user:testuser",vulnerable,732,safe,0.3825979207258963,false_negative
 semgrep:yaml/github-actions/security/secrets-inherit.test.yaml:L10,Semgrep Community Rules,Configuration,"jobs:
   call-reusable-inherit:
     uses: octo-org/example-repo/.github/workflows/reusable.yml@main
     secrets: inherit
 
   call-reusable-inherit-no-with:
-    uses: ./.github/workflows/local-reusable.yml",vulnerable,250,safe,0.3277652466322951,false_negative
+    uses: ./.github/workflows/local-reusable.yml",vulnerable,250,safe,0.16938024330729368,false_negative
 semgrep:yaml/github-actions/security/secrets-inherit.test.yaml:L15,Semgrep Community Rules,Configuration,"secrets: inherit
 
   call-reusable-inherit-no-with:
@@ -3475,7 +2019,7 @@ semgrep:yaml/github-actions/security/secrets-inherit.test.yaml:L15,Semgrep Commu
   call-reusable-inherit-with-inputs:
     uses: octo-org/example-repo/.github/workflows/reusable.yml@v1
     with:
-      config-path: .github/labeler.yml",vulnerable,250,safe,0.3064594963070875,false_negative
+      config-path: .github/labeler.yml",vulnerable,250,safe,0.15703488236968738,false_negative
 semgrep:yaml/github-actions/security/secrets-inherit.test.yaml:L22,Semgrep Community Rules,Configuration,"call-reusable-inherit-with-inputs:
     uses: octo-org/example-repo/.github/workflows/reusable.yml@v1
     with:
@@ -3483,7 +2027,7 @@ semgrep:yaml/github-actions/security/secrets-inherit.test.yaml:L22,Semgrep Commu
     secrets: inherit
 
   call-reusable-explicit-secrets:
-    uses: octo-org/example-repo/.github/workflows/reusable.yml@main",vulnerable,250,safe,0.3678441128465638,false_negative
+    uses: octo-org/example-repo/.github/workflows/reusable.yml@main",vulnerable,250,safe,0.23832652939396642,false_negative
 semgrep:yaml/kubernetes/security/allow-privilege-escalation-no-securitycontext.fixed.test.yaml:L10,Semgrep Community Rules,Configuration,"- securityContext:
         allowPrivilegeEscalation: false
       name: nginx
@@ -3493,7 +2037,7 @@ semgrep:yaml/kubernetes/security/allow-privilege-escalation-no-securitycontext.f
       securityContext:
         runAsUser: 1000
         runAsGroup: 3000
-        fsGroup: 2000",safe,732,vulnerable,0.6127325938006336,false_positive
+        fsGroup: 2000",safe,732,vulnerable,0.7052867193956014,false_positive
 semgrep:yaml/kubernetes/security/allow-privilege-escalation-no-securitycontext.fixed.test.yaml:L17,Semgrep Community Rules,Configuration,"securityContext:
         runAsUser: 1000
         runAsGroup: 3000
@@ -3501,15 +2045,7 @@ semgrep:yaml/kubernetes/security/allow-privilege-escalation-no-securitycontext.f
     - name: redis
       image: redis
       securityContext:
-        allowPrivilegeEscalation: true",safe,732,vulnerable,0.624496074448576,false_positive
-semgrep:yaml/kubernetes/security/allow-privilege-escalation-no-securitycontext.fixed.test.yaml:L22,Semgrep Community Rules,Configuration,"- name: redis
-      image: redis
-      securityContext:
-        allowPrivilegeEscalation: true
-    - name: haproxy
-      image: haproxy
-      securityContext:
-        allowPrivilegeEscalation: false",safe,732,vulnerable,0.5566587915803793,false_positive
+        allowPrivilegeEscalation: true",safe,732,vulnerable,0.6118690989792501,false_positive
 semgrep:yaml/kubernetes/security/allow-privilege-escalation-no-securitycontext.test.yaml:L8,Semgrep Community Rules,Configuration,"- name: nginx
       image: nginx
     - name: postgres
@@ -3517,7 +2053,7 @@ semgrep:yaml/kubernetes/security/allow-privilege-escalation-no-securitycontext.t
       securityContext:
         runAsUser: 1000
         runAsGroup: 3000
-        fsGroup: 2000",safe,732,vulnerable,0.6011981491084549,false_positive
+        fsGroup: 2000",safe,732,vulnerable,0.6897035688484008,false_positive
 semgrep:yaml/kubernetes/security/writable-filesystem-container.test.yaml:L20,Semgrep Community Rules,Configuration,"- name: redis
       image: redis
       securityContext:
@@ -3525,4 +2061,4 @@ semgrep:yaml/kubernetes/security/writable-filesystem-container.test.yaml:L20,Sem
     - name: haproxy
       image: haproxy
       securityContext:
-        readOnlyRootFilesystem: true",safe,732,vulnerable,0.5605986156234186,false_positive
+        readOnlyRootFilesystem: true",safe,732,vulnerable,0.5571823530783895,false_positive

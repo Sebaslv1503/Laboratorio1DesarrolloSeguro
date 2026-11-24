@@ -1,9 +1,9 @@
 standard,category,name,status,train_public_support,test_public_support,precision,recall,f1
-OWASP Top 10:2025,A01:2025,Broken Access Control,evaluada,430,78,0.6632,0.8077,0.7283
-OWASP Top 10:2025,A02:2025,Security Misconfiguration,evaluada,191,23,0.6429,0.7826,0.7059
+OWASP Top 10:2025,A01:2025,Broken Access Control,evaluada,430,78,0.7381,0.7949,0.7654
+OWASP Top 10:2025,A02:2025,Security Misconfiguration,evaluada,191,23,0.7391,0.7391,0.7391
 OWASP Top 10:2025,A03:2025,Software Supply Chain Failures,no evaluada,15,0,,,
 OWASP Top 10:2025,A04:2025,Cryptographic Failures,evaluada,821,141,0.9706,0.9362,0.9531
-OWASP Top 10:2025,A05:2025,Injection,evaluada,1616,289,0.8893,0.9446,0.9161
+OWASP Top 10:2025,A05:2025,Injection,evaluada,1616,289,0.903,0.9343,0.9184
 OWASP Top 10:2025,A06:2025,Insecure Design,no evaluada,0,0,,,
 OWASP Top 10:2025,A07:2025,Authentication Failures,evaluada,81,12,0.5,0.8333,0.625
 OWASP Top 10:2025,A08:2025,Software or Data Integrity Failures,evaluada,169,27,1.0,0.6667,0.8
@@ -11,11 +11,11 @@ OWASP Top 10:2025,A09:2025,Security Logging and Alerting Failures,no evaluada,0,
 OWASP Top 10:2025,A10:2025,Mishandling of Exceptional Conditions,no evaluada,1,0,,,
 OWASP API Security Top 10:2023,API1:2023,Broken Object Level Authorization,no evaluada,3,0,,,
 OWASP API Security Top 10:2023,API2:2023,Broken Authentication,evaluada,81,12,0.5,0.8333,0.625
-OWASP API Security Top 10:2023,API3:2023,Broken Object Property Level Authorization,evaluada,32,6,0.0769,0.1667,0.1053
+OWASP API Security Top 10:2023,API3:2023,Broken Object Property Level Authorization,evaluada,32,6,0.0909,0.1667,0.1176
 OWASP API Security Top 10:2023,API4:2023,Unrestricted Resource Consumption,no evaluada,19,0,,,
 OWASP API Security Top 10:2023,API5:2023,Broken Function Level Authorization,no evaluada,3,0,,,
 OWASP API Security Top 10:2023,API6:2023,Unrestricted Access to Sensitive Business Flows,no evaluada,0,0,,,
-OWASP API Security Top 10:2023,API7:2023,Server Side Request Forgery,evaluada,87,12,0.6,0.5,0.5455
-OWASP API Security Top 10:2023,API8:2023,Security Misconfiguration,evaluada,189,27,0.8077,0.7778,0.7925
+OWASP API Security Top 10:2023,API7:2023,Server Side Request Forgery,evaluada,87,12,0.75,0.5,0.6
+OWASP API Security Top 10:2023,API8:2023,Security Misconfiguration,evaluada,189,27,0.9524,0.7407,0.8333
 OWASP API Security Top 10:2023,API9:2023,Improper Inventory Management,no evaluada,0,0,,,
 OWASP API Security Top 10:2023,API10:2023,Unsafe Consumption of APIs,evaluada,41,6,1.0,0.5,0.6667
