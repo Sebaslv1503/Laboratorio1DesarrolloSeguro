@@ -1,0 +1,220 @@
+{
+  "dataset": "data\\vulnerabilities.csv",
+  "public_benchmark_records": 2736,
+  "synthetic_training_records": 70,
+  "teacher_training_records": 10,
+  "train_public_records": 1915,
+  "validation_public_records": 410,
+  "test_public_records": 411,
+  "split": "70/15/15 estratificado por etiqueta; validation selecciona el algoritmo; test solo OWASP Benchmark Java 1.2; el proyecto de origen es el mismo y la extrapolación externa no queda demostrada",
+  "seed": 42,
+  "comparison": {
+    "logistic_regression": {
+      "accuracy": 0.948780487804878,
+      "precision_macro": 0.9497119223505224,
+      "recall_macro": 0.9481370306842005,
+      "f1_macro": 0.9486457631263457,
+      "precision_vulnerable": 0.9360730593607306,
+      "recall_vulnerable": 0.9669811320754716,
+      "f1_vulnerable": 0.951276102088167,
+      "confusion_matrix_labels_safe_vulnerable": [
+        [
+          184,
+          14
+        ],
+        [
+          7,
+          205
+        ]
+      ],
+      "classification_report": {
+        "safe": {
+          "precision": 0.9633507853403142,
+          "recall": 0.9292929292929293,
+          "f1-score": 0.9460154241645244,
+          "support": 198.0
+        },
+        "vulnerable": {
+          "precision": 0.9360730593607306,
+          "recall": 0.9669811320754716,
+          "f1-score": 0.951276102088167,
+          "support": 212.0
+        },
+        "accuracy": 0.948780487804878,
+        "macro avg": {
+          "precision": 0.9497119223505224,
+          "recall": 0.9481370306842005,
+          "f1-score": 0.9486457631263457,
+          "support": 410.0
+        },
+        "weighted avg": {
+          "precision": 0.9492462050777002,
+          "recall": 0.948780487804878,
+          "f1-score": 0.9487355795787006,
+          "support": 410.0
+        }
+      }
+    },
+    "complement_nb": {
+      "accuracy": 0.7219512195121951,
+      "precision_macro": 0.7225375144286263,
+      "recall_macro": 0.7204593100819516,
+      "f1_macro": 0.7206483540127662,
+      "precision_vulnerable": 0.7168141592920354,
+      "recall_vulnerable": 0.7641509433962265,
+      "f1_vulnerable": 0.7397260273972602,
+      "confusion_matrix_labels_safe_vulnerable": [
+        [
+          134,
+          64
+        ],
+        [
+          50,
+          162
+        ]
+      ],
+      "classification_report": {
+        "safe": {
+          "precision": 0.7282608695652174,
+          "recall": 0.6767676767676768,
+          "f1-score": 0.7015706806282722,
+          "support": 198.0
+        },
+        "vulnerable": {
+          "precision": 0.7168141592920354,
+          "recall": 0.7641509433962265,
+          "f1-score": 0.7397260273972602,
+          "support": 212.0
+        },
+        "accuracy": 0.7219512195121951,
+        "macro avg": {
+          "precision": 0.7225375144286263,
+          "recall": 0.7204593100819516,
+          "f1-score": 0.7206483540127662,
+          "support": 410.0
+        },
+        "weighted avg": {
+          "precision": 0.7223420827898158,
+          "recall": 0.7219512195121951,
+          "f1-score": 0.7212997867624807,
+          "support": 410.0
+        }
+      }
+    }
+  },
+  "selected_binary_model": "logistic_regression",
+  "binary_test": {
+    "accuracy": 0.9586374695863747,
+    "precision_macro": 0.9586673940889037,
+    "recall_macro": 0.9584933845497225,
+    "f1_macro": 0.9585746894732161,
+    "precision_vulnerable": 0.9579439252336449,
+    "recall_vulnerable": 0.9624413145539906,
+    "f1_vulnerable": 0.9601873536299765,
+    "confusion_matrix_labels_safe_vulnerable": [
+      [
+        189,
+        9
+      ],
+      [
+        8,
+        205
+      ]
+    ],
+    "classification_report": {
+      "safe": {
+        "precision": 0.9593908629441624,
+        "recall": 0.9545454545454546,
+        "f1-score": 0.9569620253164557,
+        "support": 198.0
+      },
+      "vulnerable": {
+        "precision": 0.9579439252336449,
+        "recall": 0.9624413145539906,
+        "f1-score": 0.9601873536299765,
+        "support": 213.0
+      },
+      "accuracy": 0.9586374695863747,
+      "macro avg": {
+        "precision": 0.9586673940889037,
+        "recall": 0.9584933845497225,
+        "f1-score": 0.9585746894732161,
+        "support": 411.0
+      },
+      "weighted avg": {
+        "precision": 0.958640990116084,
+        "recall": 0.9586374695863747,
+        "f1-score": 0.9586335458293023,
+        "support": 411.0
+      }
+    }
+  },
+  "owasp_multilabel_test": {
+    "precision_micro": 1.0,
+    "recall_micro": 1.0,
+    "f1_micro": 1.0,
+    "f1_macro_active": 1.0,
+    "exact_match": 1.0,
+    "per_category": {
+      "A01:2025": {
+        "precision": 1.0,
+        "recall": 1.0,
+        "f1-score": 1.0,
+        "support": 12
+      },
+      "A02:2025": {
+        "precision": 1.0,
+        "recall": 1.0,
+        "f1-score": 1.0,
+        "support": 7
+      },
+      "A04:2025": {
+        "precision": 1.0,
+        "recall": 1.0,
+        "f1-score": 1.0,
+        "support": 68
+      },
+      "A05:2025": {
+        "precision": 1.0,
+        "recall": 1.0,
+        "f1-score": 1.0,
+        "support": 107
+      },
+      "A08:2025": {
+        "precision": 1.0,
+        "recall": 1.0,
+        "f1-score": 1.0,
+        "support": 19
+      }
+    }
+  },
+  "api_multilabel_test": {
+    "precision_micro": 1.0,
+    "recall_micro": 1.0,
+    "f1_micro": 1.0,
+    "f1_macro_active": 1.0,
+    "exact_match": 1.0,
+    "per_category": {
+      "API8:2023": {
+        "precision": 1.0,
+        "recall": 1.0,
+        "f1-score": 1.0,
+        "support": 7
+      }
+    }
+  },
+  "category_threshold": 0.4,
+  "owasp_public_test_support": {
+    "A01:2025": 12,
+    "A02:2025": 7,
+    "A04:2025": 68,
+    "A05:2025": 107,
+    "A08:2025": 19
+  },
+  "api_public_test_support": {
+    "API8:2023": 7
+  },
+  "limitation": "Las categorías OWASP sin soporte público proceden solo de casos controlados sintéticos y no tienen evaluación independiente. Las etiquetas CWE-OWASP son mapeos curados orientativos, no equivalencias normativas.",
+  "python": "3.14.0",
+  "scikit_learn": "1.9.1"
+}

@@ -1,0 +1,61 @@
+{
+  "records": 2816,
+  "benchmark_records": 2736,
+  "teacher_records": 10,
+  "non_synthetic_records": 2746,
+  "synthetic_records": 70,
+  "duplicates_exact": 0,
+  "missing_code": 0,
+  "labels": {
+    "vulnerable": 1479,
+    "safe": 1337
+  },
+  "provenance": {
+    "OWASP Benchmark Java 1.2": 2736,
+    "synthetic-controlled": 70,
+    "Dataset profesor (muestra deduplicada)": 10
+  },
+  "languages": {
+    "Java": 2736,
+    "mixed": 70,
+    "Python": 5,
+    "JavaScript": 5
+  },
+  "public_owasp": {
+    "A05:2025": 686,
+    "A04:2025": 477,
+    "A01:2025": 133,
+    "A08:2025": 83,
+    "A02:2025": 36
+  },
+  "public_api": {
+    "API8:2023": 36
+  },
+  "cwe": {
+    "89": 514,
+    "330": 490,
+    "79": 461,
+    "22": 271,
+    "327": 251,
+    "78": 251,
+    "328": 236,
+    "501": 126,
+    "614": 70,
+    "90": 59,
+    "643": 35,
+    "639": 5,
+    "770": 5,
+    "918": 5,
+    "16": 5,
+    "502": 5,
+    "287": 3,
+    "915": 3,
+    "862": 3,
+    "841": 3,
+    "1059": 3,
+    "444": 3,
+    "829": 3,
+    "778": 3,
+    "703": 3
+  }
+}

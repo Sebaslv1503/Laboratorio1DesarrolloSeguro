@@ -1,0 +1,1427 @@
+source_id,code,label,cwe,prediction,probability_vulnerable,error_type
+BenchmarkTest02393,"import java.io.IOException;
+import javax.servlet.ServletException;
+import javax.servlet.annotation.WebServlet;
+import javax.servlet.http.HttpServlet;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+
+@WebServlet(value = ""/case/BenchmarkCase"")
+public class BenchmarkCase extends HttpServlet {
+
+    private static final long serialVersionUID = 1L;
+
+    @Override
+    public void doGet(HttpServletRequest request, HttpServletResponse response)
+            throws ServletException, IOException {
+        doPost(request, response);
+    }
+
+    @Override
+    public void doPost(HttpServletRequest request, HttpServletResponse response)
+            throws ServletException, IOException {
+        response.setContentType(""text/html;charset=UTF-8"");
+
+        org.owasp.benchmark.helpers.SeparateClassRequest scr =
+                new org.owasp.benchmark.helpers.SeparateClassRequest(request);
+        String param = scr.getTheParameter(""BenchmarkCase"");
+        if (param == null) param = """";
+
+        String bar = doSomething(request, param);
+
+        try {
+            java.util.Properties benchmarkprops = new java.util.Properties();
+            benchmarkprops.load(
+                    this.getClass().getClassLoader().getResourceAsStream(""benchmark.properties""));
+            String algorithm = benchmarkprops.getProperty(""hashAlg1"", ""SHA512"");
+            java.security.MessageDigest md = java.security.MessageDigest.getInstance(algorithm);
+            byte[] input = {(byte) '?'};
+            Object inputParam = bar;
+            if (inputParam instanceof String) input = ((String) inputParam).getBytes();
+            if (inputParam instanceof java.io.InputStream) {
+                byte[] strInput = new byte[1000];
+                int i = ((java.io.InputStream) inputParam).read(strInput);
+                if (i == -1) {
+                    response.getWriter()
+                            .println(
+                                    ""This input source requires a POST, not a GET. Incompatible UI for the InputStream source."");
+                    return;
+                }
+                input = java.util.Arrays.copyOf(strInput, i);
+            }
+            md.update(input);
+
+            byte[] result = md.digest();
+            java.io.File fileTarget =
+                    new java.io.File(
+                            new java.io.File(org.owasp.benchmark.helpers.Utils.TESTFILES_DIR),
+                            ""passwordFile.txt"");
+            java.io.FileWriter fw =
+                    new java.io.FileWriter(fileTarget, true); // the true will append the new data
+            fw.write(
+                    ""hash_value=""
+                            + org.owasp.esapi.ESAPI.encoder().encodeForBase64(result, true)
+                            + ""\n"");
+            fw.close();
+            response.getWriter()
+                    .println(
+                            ""Sensitive value '""
+                                    + org.owasp
+                                            .esapi
+                                            .ESAPI
+                                            .encoder()
+                                            .encodeForHTML(new String(input))
+                                    + ""' hashed and stored<br/>"");
+
+        } catch (java.security.NoSuchAlgorithmException e) {
+            System.out.println(""Problem executing hash - TestCase"");
+            throw new ServletException(e);
+        }
+
+        response.getWriter()
+                .println(
+                        ""Hash Test java.security.MessageDigest.getInstance(java.lang.String) executed"");
+    } // end doPost
+
+    private static String doSomething(HttpServletRequest request, String param)
+            throws ServletException, IOException {
+ 
+        String a24492 = param; // assign
+        StringBuilder b24492 = new StringBuilder(a24492); // stick in stringbuilder
+        b24492.append("" SafeStuff""); // append some safe content
+        b24492.replace(
+                b24492.length() - ""Chars"".length(),
+                b24492.length(),
+                ""Chars""); // replace some of the end content
+        java.util.HashMap<String, Object> map24492 = new java.util.HashMap<String, Object>();
+        map24492.put(""key24492"", b24492.toString()); // put in a collection
+        String c24492 = (String) map24492.get(""key24492""); // get it back out
+        String d24492 = c24492.substring(0, c24492.length() - 1); // extract most of it
+        String e24492 =
+                new String(
+                        org.apache.commons.codec.binary.Base64.decodeBase64(
+                                org.apache.commons.codec.binary.Base64.encodeBase64(
+                                        d24492.getBytes()))); // B64 encode and decode it
+        String f24492 = e24492.split("" "")[0]; // split it on a space
+        org.owasp.benchmark.helpers.ThingInterface thing =
+                org.owasp.benchmark.helpers.ThingFactory.createThing();
+        String g24492 = ""barbarians_at_the_gate""; // This is static so this whole flow is 'safe'
+        String bar = thing.doSomething(g24492); // reflection
+
+        return bar;
+    }
+}",vulnerable,328,safe,0.24340408836967298,false_negative
+BenchmarkTest00479,"import java.io.IOException;
+import javax.servlet.ServletException;
+import javax.servlet.annotation.WebServlet;
+import javax.servlet.http.HttpServlet;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+
+@WebServlet(value = ""/case/BenchmarkCase"")
+public class BenchmarkCase extends HttpServlet {
+
+    private static final long serialVersionUID = 1L;
+
+    @Override
+    public void doGet(HttpServletRequest request, HttpServletResponse response)
+            throws ServletException, IOException {
+        doPost(request, response);
+    }
+
+    @Override
+    public void doPost(HttpServletRequest request, HttpServletResponse response)
+            throws ServletException, IOException {
+        response.setContentType(""text/html;charset=UTF-8"");
+
+        java.util.Map<String, String[]> map = request.getParameterMap();
+        String param = """";
+        if (!map.isEmpty()) {
+            String[] values = map.get(""BenchmarkCase"");
+            if (values != null) param = values[0];
+        }
+
+        String bar = org.owasp.esapi.ESAPI.encoder().encodeForHTML(param);
+
+        response.setHeader(""X-XSS-Protection"", ""0"");
+        int length = 1;
+        if (bar != null) {
+            length = bar.length();
+            response.getWriter().write(bar.toCharArray(), 0, length);
+        }
+    }
+}",safe,79,vulnerable,0.5722414214608627,false_positive
+BenchmarkTest02125,"import java.io.IOException;
+import javax.servlet.ServletException;
+import javax.servlet.annotation.WebServlet;
+import javax.servlet.http.HttpServlet;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+
+@WebServlet(value = ""/case/BenchmarkCase"")
+public class BenchmarkCase extends HttpServlet {
+
+    private static final long serialVersionUID = 1L;
+
+    @Override
+    public void doGet(HttpServletRequest request, HttpServletResponse response)
+            throws ServletException, IOException {
+        doPost(request, response);
+    }
+
+    @Override
+    public void doPost(HttpServletRequest request, HttpServletResponse response)
+            throws ServletException, IOException {
+        response.setContentType(""text/html;charset=UTF-8"");
+
+        String param = request.getParameter(""BenchmarkCase"");
+        if (param == null) param = """";
+
+        String bar = doSomething(request, param);
+
+        response.setHeader(""X-XSS-Protection"", ""0"");
+        response.getWriter().print(bar);
+    } // end doPost
+
+    private static String doSomething(HttpServletRequest request, String param)
+            throws ServletException, IOException {
+
+        String bar = org.owasp.esapi.ESAPI.encoder().encodeForHTML(param);
+
+        return bar;
+    }
+}",safe,79,vulnerable,0.5078670716283141,false_positive
+BenchmarkTest01786,"import java.io.IOException;
+import javax.servlet.ServletException;
+import javax.servlet.annotation.WebServlet;
+import javax.servlet.http.HttpServlet;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+
+@WebServlet(value = ""/case/BenchmarkCase"")
+public class BenchmarkCase extends HttpServlet {
+
+    private static final long serialVersionUID = 1L;
+
+    @Override
+    public void doGet(HttpServletRequest request, HttpServletResponse response)
+            throws ServletException, IOException {
+        doPost(request, response);
+    }
+
+    @Override
+    public void doPost(HttpServletRequest request, HttpServletResponse response)
+            throws ServletException, IOException {
+        response.setContentType(""text/html;charset=UTF-8"");
+
+        org.owasp.benchmark.helpers.SeparateClassRequest scr =
+                new org.owasp.benchmark.helpers.SeparateClassRequest(request);
+        String param = scr.getTheValue(""BenchmarkCase"");
+
+        String bar = new Test().doSomething(request, param);
+
+        int r = new java.util.Random().nextInt();
+        String rememberMeKey = Integer.toString(r);
+
+        String user = ""Ingrid"";
+        String fullClassName = this.getClass().getName();
+        String testCaseNumber =
+                fullClassName.substring(
+                        fullClassName.lastIndexOf('.') + 1 + ""BenchmarkTest"".length());
+        user += testCaseNumber;
+
+        String cookieName = ""rememberMe"" + testCaseNumber;
+
+        boolean foundUser = false;
+        javax.servlet.http.Cookie[] cookies = request.getCookies();
+        if (cookies != null) {
+            for (int i = 0; !foundUser && i < cookies.length; i++) {
+                javax.servlet.http.Cookie cookie = cookies[i];
+                if (cookieName.equals(cookie.getName())) {
+                    if (cookie.getValue().equals(request.getSession().getAttribute(cookieName))) {
+                        foundUser = true;
+                    }
+                }
+            }
+        }
+
+        if (foundUser) {
+            response.getWriter().println(""Welcome back: "" + user + ""<br/>"");
+        } else {
+            javax.servlet.http.Cookie rememberMe =
+                    new javax.servlet.http.Cookie(cookieName, rememberMeKey);
+            rememberMe.setSecure(true);
+            rememberMe.setHttpOnly(true);
+            rememberMe.setPath(request.getRequestURI()); // i.e., set path to JUST this servlet
+ 
+            request.getSession().setAttribute(cookieName, rememberMeKey);
+            response.addCookie(rememberMe);
+            response.getWriter()
+                    .println(
+                            user
+                                    + "" has been remembered with cookie: ""
+                                    + rememberMe.getName()
+                                    + "" whose value is: ""
+                                    + rememberMe.getValue()
+                                    + ""<br/>"");
+        }
+
+        response.getWriter().println(""Weak Randomness Test java.util.Random.nextInt() executed"");
+    } // end doPost
+
+    private class Test {
+
+        public String doSomething(HttpServletRequest request, String param)
+                throws ServletException, IOException {
+
+            String bar = ""alsosafe"";
+            if (param != null) {
+                java.util.List<String> valuesList = new java.util.ArrayList<String>();
+                valuesList.add(""safe"");
+                valuesList.add(param);
+                valuesList.add(""moresafe"");
+
+                valuesList.remove(0); // remove the 1st safe value
+
+                bar = valuesList.get(1); // get the last 'safe' value
+            }
+
+            return bar;
+        }
+    } // end innerclass Test
+} // end DataflowThruInnerClass",vulnerable,330,safe,0.38050604267235805,false_negative
+BenchmarkTest02003,"import java.io.IOException;
+import javax.servlet.ServletException;
+import javax.servlet.annotation.WebServlet;
+import javax.servlet.http.HttpServlet;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+
+@WebServlet(value = ""/case/BenchmarkCase"")
+public class BenchmarkCase extends HttpServlet {
+
+    private static final long serialVersionUID = 1L;
+
+    @Override
+    public void doGet(HttpServletRequest request, HttpServletResponse response)
+            throws ServletException, IOException {
+        doPost(request, response);
+    }
+
+    @Override
+    public void doPost(HttpServletRequest request, HttpServletResponse response)
+            throws ServletException, IOException {
+        response.setContentType(""text/html;charset=UTF-8"");
+
+        String param = """";
+        java.util.Enumeration<String> names = request.getHeaderNames();
+        while (names.hasMoreElements()) {
+            String name = (String) names.nextElement();
+
+            if (org.owasp.benchmark.helpers.Utils.commonHeaders.contains(name)) {
+                continue; // If standard header, move on to next one
+            }
+
+            java.util.Enumeration<String> values = request.getHeaders(name);
+            if (values != null && values.hasMoreElements()) {
+                param = name; // Grabs the name of the first non-standard header as the parameter
+ 
+                break;
+            }
+        }
+ 
+
+        String bar = doSomething(request, param);
+
+        int r = new java.util.Random().nextInt();
+        String rememberMeKey = Integer.toString(r);
+
+        String user = ""Ingrid"";
+        String fullClassName = this.getClass().getName();
+        String testCaseNumber =
+                fullClassName.substring(
+                        fullClassName.lastIndexOf('.') + 1 + ""BenchmarkTest"".length());
+        user += testCaseNumber;
+
+        String cookieName = ""rememberMe"" + testCaseNumber;
+
+        boolean foundUser = false;
+        javax.servlet.http.Cookie[] cookies = request.getCookies();
+        if (cookies != null) {
+            for (int i = 0; !foundUser && i < cookies.length; i++) {
+                javax.servlet.http.Cookie cookie = cookies[i];
+                if (cookieName.equals(cookie.getName())) {
+                    if (cookie.getValue().equals(request.getSession().getAttribute(cookieName))) {
+                        foundUser = true;
+                    }
+                }
+            }
+        }
+
+        if (foundUser) {
+            response.getWriter().println(""Welcome back: "" + user + ""<br/>"");
+        } else {
+            javax.servlet.http.Cookie rememberMe =
+                    new javax.servlet.http.Cookie(cookieName, rememberMeKey);
+            rememberMe.setSecure(true);
+            rememberMe.setHttpOnly(true);
+            rememberMe.setPath(request.getRequestURI()); // i.e., set path to JUST this servlet
+ 
+            request.getSession().setAttribute(cookieName, rememberMeKey);
+            response.addCookie(rememberMe);
+            response.getWriter()
+                    .println(
+                            user
+                                    + "" has been remembered with cookie: ""
+                                    + rememberMe.getName()
+                                    + "" whose value is: ""
+                                    + rememberMe.getValue()
+                                    + ""<br/>"");
+        }
+
+        response.getWriter().println(""Weak Randomness Test java.util.Random.nextInt() executed"");
+    } // end doPost
+
+    private static String doSomething(HttpServletRequest request, String param)
+            throws ServletException, IOException {
+ 
+        String a69278 = param; // assign
+        StringBuilder b69278 = new StringBuilder(a69278); // stick in stringbuilder
+        b69278.append("" SafeStuff""); // append some safe content
+        b69278.replace(
+                b69278.length() - ""Chars"".length(),
+                b69278.length(),
+                ""Chars""); // replace some of the end content
+        java.util.HashMap<String, Object> map69278 = new java.util.HashMap<String, Object>();
+        map69278.put(""key69278"", b69278.toString()); // put in a collection
+        String c69278 = (String) map69278.get(""key69278""); // get it back out
+        String d69278 = c69278.substring(0, c69278.length() - 1); // extract most of it
+        String e69278 =
+                new String(
+                        org.apache.commons.codec.binary.Base64.decodeBase64(
+                                org.apache.commons.codec.binary.Base64.encodeBase64(
+                                        d69278.getBytes()))); // B64 encode and decode it
+        String f69278 = e69278.split("" "")[0]; // split it on a space
+        org.owasp.benchmark.helpers.ThingInterface thing =
+                org.owasp.benchmark.helpers.ThingFactory.createThing();
+        String g69278 = ""barbarians_at_the_gate""; // This is static so this whole flow is 'safe'
+        String bar = thing.doSomething(g69278); // reflection
+
+        return bar;
+    }
+}",vulnerable,330,safe,0.49508890929694377,false_negative
+BenchmarkTest00618,"import java.io.IOException;
+import javax.servlet.ServletException;
+import javax.servlet.annotation.WebServlet;
+import javax.servlet.http.HttpServlet;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+
+@WebServlet(value = ""/case/BenchmarkCase"")
+public class BenchmarkCase extends HttpServlet {
+
+    private static final long serialVersionUID = 1L;
+
+    @Override
+    public void doGet(HttpServletRequest request, HttpServletResponse response)
+            throws ServletException, IOException {
+        doPost(request, response);
+    }
+
+    @Override
+    public void doPost(HttpServletRequest request, HttpServletResponse response)
+            throws ServletException, IOException {
+        response.setContentType(""text/html;charset=UTF-8"");
+
+        org.owasp.benchmark.helpers.SeparateClassRequest scr =
+                new org.owasp.benchmark.helpers.SeparateClassRequest(request);
+        String param = scr.getTheParameter(""BenchmarkCase"");
+        if (param == null) param = """";
+
+        String bar;
+ 
+        int num = 196;
+        if ((500 / 42) + num > 200) bar = param;
+        else bar = ""This should never happen"";
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+
+        try {
+            java.util.Properties benchmarkprops = new java.util.Properties();
+            benchmarkprops.load(
+                    this.getClass().getClassLoader().getResourceAsStream(""benchmark.properties""));
+            String algorithm = benchmarkprops.getProperty(""cryptoAlg2"", ""AES/ECB/PKCS5Padding"");
+            javax.crypto.Cipher c = javax.crypto.Cipher.getInstance(algorithm);
+ 
+            javax.crypto.SecretKey key = javax.crypto.KeyGenerator.getInstance(""AES"").generateKey();
+            c.init(javax.crypto.Cipher.ENCRYPT_MODE, key);
+ 
+            byte[] input = {(byte) '?'};
+            Object inputParam = bar;
+            if (inputParam instanceof String) input = ((String) inputParam).getBytes();
+            if (inputParam instanceof java.io.InputStream) {
+                byte[] strInput = new byte[1000];
+                int i = ((java.io.InputStream) inputParam).read(strInput);
+                if (i == -1) {
+                    response.getWriter()
+                            .println(
+                                    ""This input source requires a POST, not a GET. Incompatible UI for the InputStream source."");
+                    return;
+                }
+                input = java.util.Arrays.copyOf(strInput, i);
+            }
+            byte[] result = c.doFinal(input);
+
+            java.io.File fileTarget =
+                    new java.io.File(
+                            new java.io.File(org.owasp.benchmark.helpers.Utils.TESTFILES_DIR),
+                            ""passwordFile.txt"");
+            java.io.FileWriter fw =
+                    new java.io.FileWriter(fileTarget, true); // the true will append the new data
+            fw.write(
+                    ""secret_value=""
+                            + org.owasp.esapi.ESAPI.encoder().encodeForBase64(result, true)
+                            + ""\n"");
+            fw.close();
+            response.getWriter()
+                    .println(
+                            ""Sensitive value: '""
+                                    + org.owasp
+                                            .esapi
+                                            .ESAPI
+                                            .encoder()
+                                            .encodeForHTML(new String(input))
+                                    + ""' encrypted and stored<br/>"");
+
+        } catch (java.security.NoSuchAlgorithmException
+                | javax.crypto.NoSuchPaddingException
+                | javax.crypto.IllegalBlockSizeException
+                | javax.crypto.BadPaddingException
+                | java.security.InvalidKeyException e) {
+            response.getWriter()
+                    .println(
+                            ""Problem executing crypto - javax.crypto.Cipher.getInstance(java.lang.String) Test Case"");
+            e.printStackTrace(response.getWriter());
+            throw new ServletException(e);
+        }
+    }
+}",safe,327,vulnerable,0.5917712554466233,false_positive
+BenchmarkTest00088,"import java.io.IOException;
+import javax.servlet.ServletException;
+import javax.servlet.annotation.WebServlet;
+import javax.servlet.http.HttpServlet;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+
+@WebServlet(value = ""/case/BenchmarkCase"")
+public class BenchmarkCase extends HttpServlet {
+
+    private static final long serialVersionUID = 1L;
+
+    @Override
+    public void doGet(HttpServletRequest request, HttpServletResponse response)
+            throws ServletException, IOException {
+        response.setContentType(""text/html;charset=UTF-8"");
+        javax.servlet.http.Cookie userCookie =
+                new javax.servlet.http.Cookie(""BenchmarkCase"", ""whatever"");
+        userCookie.setMaxAge(60 * 3); // Store cookie for 3 minutes
+        userCookie.setSecure(true);
+        userCookie.setHttpOnly(true);
+        userCookie.setPath(request.getRequestURI());
+        userCookie.setDomain(new java.net.URL(request.getRequestURL().toString()).getHost());
+        response.addCookie(userCookie);
+        javax.servlet.RequestDispatcher rd =
+                request.getRequestDispatcher(""/case/BenchmarkCase.html"");
+        rd.include(request, response);
+    }
+
+    @Override
+    public void doPost(HttpServletRequest request, HttpServletResponse response)
+            throws ServletException, IOException {
+        response.setContentType(""text/html;charset=UTF-8"");
+
+        javax.servlet.http.Cookie[] theCookies = request.getCookies();
+
+        String param = ""noCookieValueSupplied"";
+        if (theCookies != null) {
+            for (javax.servlet.http.Cookie theCookie : theCookies) {
+                if (theCookie.getName().equals(""BenchmarkCase"")) {
+                    param = java.net.URLDecoder.decode(theCookie.getValue(), ""UTF-8"");
+                    break;
+                }
+            }
+        }
+
+        String bar = org.owasp.esapi.ESAPI.encoder().encodeForHTML(param);
+
+        byte[] input = new byte[1000];
+        String str = ""?"";
+        Object inputParam = param;
+        if (inputParam instanceof String) str = ((String) inputParam);
+        if (inputParam instanceof java.io.InputStream) {
+            int i = ((java.io.InputStream) inputParam).read(input);
+            if (i == -1) {
+                response.getWriter()
+                        .println(
+                                ""This input source requires a POST, not a GET. Incompatible UI for the InputStream source."");
+                return;
+            }
+            str = new String(input, 0, i);
+        }
+        if ("""".equals(str)) str = ""No cookie value supplied"";
+        javax.servlet.http.Cookie cookie = new javax.servlet.http.Cookie(""SomeCookie"", str);
+
+        cookie.setSecure(true);
+        cookie.setHttpOnly(true);
+        cookie.setPath(request.getRequestURI()); // i.e., set path to JUST this servlet
+ 
+        response.addCookie(cookie);
+
+        response.getWriter()
+                .println(
+                        ""Created cookie: 'SomeCookie': with value: '""
+                                + org.owasp.esapi.ESAPI.encoder().encodeForHTML(str)
+                                + ""' and secure flag set to: true"");
+    }
+}",safe,614,vulnerable,0.5206995357183527,false_positive
+BenchmarkTest02709,"import java.io.IOException;
+import javax.servlet.ServletException;
+import javax.servlet.annotation.WebServlet;
+import javax.servlet.http.HttpServlet;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+
+@WebServlet(value = ""/case/BenchmarkCase"")
+public class BenchmarkCase extends HttpServlet {
+
+    private static final long serialVersionUID = 1L;
+
+    @Override
+    public void doGet(HttpServletRequest request, HttpServletResponse response)
+            throws ServletException, IOException {
+        doPost(request, response);
+    }
+
+    @Override
+    public void doPost(HttpServletRequest request, HttpServletResponse response)
+            throws ServletException, IOException {
+        response.setContentType(""text/html;charset=UTF-8"");
+
+        org.owasp.benchmark.helpers.SeparateClassRequest scr =
+                new org.owasp.benchmark.helpers.SeparateClassRequest(request);
+        String param = scr.getTheValue(""BenchmarkCase"");
+
+        String bar = doSomething(request, param);
+
+        byte[] input = new byte[1000];
+        String str = ""?"";
+        Object inputParam = param;
+        if (inputParam instanceof String) str = ((String) inputParam);
+        if (inputParam instanceof java.io.InputStream) {
+            int i = ((java.io.InputStream) inputParam).read(input);
+            if (i == -1) {
+                response.getWriter()
+                        .println(
+                                ""This input source requires a POST, not a GET. Incompatible UI for the InputStream source."");
+                return;
+            }
+            str = new String(input, 0, i);
+        }
+        if ("""".equals(str)) str = ""No cookie value supplied"";
+        javax.servlet.http.Cookie cookie = new javax.servlet.http.Cookie(""SomeCookie"", str);
+
+        cookie.setSecure(false);
+        cookie.setHttpOnly(true);
+        cookie.setPath(request.getRequestURI()); // i.e., set path to JUST this servlet
+ 
+        response.addCookie(cookie);
+
+        response.getWriter()
+                .println(
+                        ""Created cookie: 'SomeCookie': with value: '""
+                                + org.owasp.esapi.ESAPI.encoder().encodeForHTML(str)
+                                + ""' and secure flag set to: false"");
+    } // end doPost
+
+    private static String doSomething(HttpServletRequest request, String param)
+            throws ServletException, IOException {
+
+        String bar;
+ 
+        int num = 106;
+
+        bar = (7 * 42) - num > 200 ? ""This should never happen"" : param;
+
+        return bar;
+    }
+}",vulnerable,614,safe,0.4318575806251415,false_negative
+BenchmarkTest00903,"import java.io.IOException;
+import javax.servlet.ServletException;
+import javax.servlet.annotation.WebServlet;
+import javax.servlet.http.HttpServlet;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+
+@WebServlet(value = ""/case/BenchmarkCase"")
+public class BenchmarkCase extends HttpServlet {
+
+    private static final long serialVersionUID = 1L;
+
+    @Override
+    public void doGet(HttpServletRequest request, HttpServletResponse response)
+            throws ServletException, IOException {
+        doPost(request, response);
+    }
+
+    @Override
+    public void doPost(HttpServletRequest request, HttpServletResponse response)
+            throws ServletException, IOException {
+        response.setContentType(""text/html;charset=UTF-8"");
+
+        org.owasp.benchmark.helpers.SeparateClassRequest scr =
+                new org.owasp.benchmark.helpers.SeparateClassRequest(request);
+        String param = scr.getTheValue(""BenchmarkCase"");
+
+        String bar;
+        String guess = ""ABC"";
+        char switchTarget = guess.charAt(1); // condition 'B', which is safe
+ 
+        switch (switchTarget) {
+            case 'A':
+                bar = param;
+                break;
+            case 'B':
+                bar = ""bob"";
+                break;
+            case 'C':
+            case 'D':
+                bar = param;
+                break;
+            default:
+                bar = ""bob's your uncle"";
+                break;
+        }
+
+        byte[] input = new byte[1000];
+        String str = ""?"";
+        Object inputParam = param;
+        if (inputParam instanceof String) str = ((String) inputParam);
+        if (inputParam instanceof java.io.InputStream) {
+            int i = ((java.io.InputStream) inputParam).read(input);
+            if (i == -1) {
+                response.getWriter()
+                        .println(
+                                ""This input source requires a POST, not a GET. Incompatible UI for the InputStream source."");
+                return;
+            }
+            str = new String(input, 0, i);
+        }
+        if ("""".equals(str)) str = ""No cookie value supplied"";
+        javax.servlet.http.Cookie cookie = new javax.servlet.http.Cookie(""SomeCookie"", str);
+
+        cookie.setSecure(false);
+        cookie.setHttpOnly(true);
+        cookie.setPath(request.getRequestURI()); // i.e., set path to JUST this servlet
+ 
+        response.addCookie(cookie);
+
+        response.getWriter()
+                .println(
+                        ""Created cookie: 'SomeCookie': with value: '""
+                                + org.owasp.esapi.ESAPI.encoder().encodeForHTML(str)
+                                + ""' and secure flag set to: false"");
+    }
+}",vulnerable,614,safe,0.05963967685348616,false_negative
+BenchmarkTest02609,"import java.io.IOException;
+import javax.servlet.ServletException;
+import javax.servlet.annotation.WebServlet;
+import javax.servlet.http.HttpServlet;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+
+@WebServlet(value = ""/case/BenchmarkCase"")
+public class BenchmarkCase extends HttpServlet {
+
+    private static final long serialVersionUID = 1L;
+
+    @Override
+    public void doGet(HttpServletRequest request, HttpServletResponse response)
+            throws ServletException, IOException {
+        doPost(request, response);
+    }
+
+    @Override
+    public void doPost(HttpServletRequest request, HttpServletResponse response)
+            throws ServletException, IOException {
+        response.setContentType(""text/html;charset=UTF-8"");
+
+        String queryString = request.getQueryString();
+        String paramval = ""BenchmarkCase"" + ""="";
+        int paramLoc = -1;
+        if (queryString != null) paramLoc = queryString.indexOf(paramval);
+        if (paramLoc == -1) {
+            response.getWriter()
+                    .println(
+                            ""getQueryString() couldn't find expected parameter '""
+                                    + ""BenchmarkCase""
+                                    + ""' in query string."");
+            return;
+        }
+
+        String param =
+                queryString.substring(
+                        paramLoc
+                                + paramval
+                                        .length()); // 1st assume ""BenchmarkCase"" param is last
+ 
+ 
+ 
+        int ampersandLoc = queryString.indexOf(""&"", paramLoc);
+        if (ampersandLoc != -1) {
+            param = queryString.substring(paramLoc + paramval.length(), ampersandLoc);
+        }
+        param = java.net.URLDecoder.decode(param, ""UTF-8"");
+
+        String bar = doSomething(request, param);
+
+        response.setHeader(""X-XSS-Protection"", ""0"");
+        response.getWriter().write(""Parameter value: "" + bar);
+    } // end doPost
+
+    private static String doSomething(HttpServletRequest request, String param)
+            throws ServletException, IOException {
+
+        String bar = org.owasp.esapi.ESAPI.encoder().encodeForHTML(param);
+
+        return bar;
+    }
+}",safe,79,vulnerable,0.6798501671075841,false_positive
+BenchmarkTest00524,"import java.io.IOException;
+import javax.servlet.ServletException;
+import javax.servlet.annotation.WebServlet;
+import javax.servlet.http.HttpServlet;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+
+@WebServlet(value = ""/case/BenchmarkCase"")
+public class BenchmarkCase extends HttpServlet {
+
+    private static final long serialVersionUID = 1L;
+
+    @Override
+    public void doGet(HttpServletRequest request, HttpServletResponse response)
+            throws ServletException, IOException {
+        doPost(request, response);
+    }
+
+    @Override
+    public void doPost(HttpServletRequest request, HttpServletResponse response)
+            throws ServletException, IOException {
+        response.setContentType(""text/html;charset=UTF-8"");
+
+        String param = """";
+        boolean flag = true;
+        java.util.Enumeration<String> names = request.getParameterNames();
+        while (names.hasMoreElements() && flag) {
+            String name = (String) names.nextElement();
+            String[] values = request.getParameterValues(name);
+            if (values != null) {
+                for (int i = 0; i < values.length && flag; i++) {
+                    String value = values[i];
+                    if (value.equals(""BenchmarkCase"")) {
+                        param = name;
+                        flag = false;
+                    }
+                }
+            }
+        }
+ 
+        String a18964 = param; // assign
+        StringBuilder b18964 = new StringBuilder(a18964); // stick in stringbuilder
+        b18964.append("" SafeStuff""); // append some safe content
+        b18964.replace(
+                b18964.length() - ""Chars"".length(),
+                b18964.length(),
+                ""Chars""); // replace some of the end content
+        java.util.HashMap<String, Object> map18964 = new java.util.HashMap<String, Object>();
+        map18964.put(""key18964"", b18964.toString()); // put in a collection
+        String c18964 = (String) map18964.get(""key18964""); // get it back out
+        String d18964 = c18964.substring(0, c18964.length() - 1); // extract most of it
+        String e18964 =
+                new String(
+                        org.apache.commons.codec.binary.Base64.decodeBase64(
+                                org.apache.commons.codec.binary.Base64.encodeBase64(
+                                        d18964.getBytes()))); // B64 encode and decode it
+        String f18964 = e18964.split("" "")[0]; // split it on a space
+        org.owasp.benchmark.helpers.ThingInterface thing =
+                org.owasp.benchmark.helpers.ThingFactory.createThing();
+        String bar = thing.doSomething(f18964); // reflection
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+
+        try {
+            java.util.Properties benchmarkprops = new java.util.Properties();
+            benchmarkprops.load(
+                    this.getClass().getClassLoader().getResourceAsStream(""benchmark.properties""));
+            String algorithm = benchmarkprops.getProperty(""cryptoAlg2"", ""AES/ECB/PKCS5Padding"");
+            javax.crypto.Cipher c = javax.crypto.Cipher.getInstance(algorithm);
+ 
+            javax.crypto.SecretKey key = javax.crypto.KeyGenerator.getInstance(""AES"").generateKey();
+            c.init(javax.crypto.Cipher.ENCRYPT_MODE, key);
+ 
+            byte[] input = {(byte) '?'};
+            Object inputParam = bar;
+            if (inputParam instanceof String) input = ((String) inputParam).getBytes();
+            if (inputParam instanceof java.io.InputStream) {
+                byte[] strInput = new byte[1000];
+                int i = ((java.io.InputStream) inputParam).read(strInput);
+                if (i == -1) {
+                    response.getWriter()
+                            .println(
+                                    ""This input source requires a POST, not a GET. Incompatible UI for the InputStream source."");
+                    return;
+                }
+                input = java.util.Arrays.copyOf(strInput, i);
+            }
+            byte[] result = c.doFinal(input);
+
+            java.io.File fileTarget =
+                    new java.io.File(
+                            new java.io.File(org.owasp.benchmark.helpers.Utils.TESTFILES_DIR),
+                            ""passwordFile.txt"");
+            java.io.FileWriter fw =
+                    new java.io.FileWriter(fileTarget, true); // the true will append the new data
+            fw.write(
+                    ""secret_value=""
+                            + org.owasp.esapi.ESAPI.encoder().encodeForBase64(result, true)
+                            + ""\n"");
+            fw.close();
+            response.getWriter()
+                    .println(
+                            ""Sensitive value: '""
+                                    + org.owasp
+                                            .esapi
+                                            .ESAPI
+                                            .encoder()
+                                            .encodeForHTML(new String(input))
+                                    + ""' encrypted and stored<br/>"");
+
+        } catch (java.security.NoSuchAlgorithmException
+                | javax.crypto.NoSuchPaddingException
+                | javax.crypto.IllegalBlockSizeException
+                | javax.crypto.BadPaddingException
+                | java.security.InvalidKeyException e) {
+            response.getWriter()
+                    .println(
+                            ""Problem executing crypto - javax.crypto.Cipher.getInstance(java.lang.String) Test Case"");
+            e.printStackTrace(response.getWriter());
+            throw new ServletException(e);
+        }
+    }
+}",safe,327,vulnerable,0.7395218433295799,false_positive
+BenchmarkTest01671,"import java.io.IOException;
+import javax.servlet.ServletException;
+import javax.servlet.annotation.WebServlet;
+import javax.servlet.http.HttpServlet;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+
+@WebServlet(value = ""/case/BenchmarkCase"")
+public class BenchmarkCase extends HttpServlet {
+
+    private static final long serialVersionUID = 1L;
+
+    @Override
+    public void doGet(HttpServletRequest request, HttpServletResponse response)
+            throws ServletException, IOException {
+        doPost(request, response);
+    }
+
+    @Override
+    public void doPost(HttpServletRequest request, HttpServletResponse response)
+            throws ServletException, IOException {
+        response.setContentType(""text/html;charset=UTF-8"");
+
+        String queryString = request.getQueryString();
+        String paramval = ""BenchmarkCase"" + ""="";
+        int paramLoc = -1;
+        if (queryString != null) paramLoc = queryString.indexOf(paramval);
+        if (paramLoc == -1) {
+            response.getWriter()
+                    .println(
+                            ""getQueryString() couldn't find expected parameter '""
+                                    + ""BenchmarkCase""
+                                    + ""' in query string."");
+            return;
+        }
+
+        String param =
+                queryString.substring(
+                        paramLoc
+                                + paramval
+                                        .length()); // 1st assume ""BenchmarkCase"" param is last
+ 
+ 
+ 
+        int ampersandLoc = queryString.indexOf(""&"", paramLoc);
+        if (ampersandLoc != -1) {
+            param = queryString.substring(paramLoc + paramval.length(), ampersandLoc);
+        }
+        param = java.net.URLDecoder.decode(param, ""UTF-8"");
+
+        String bar = new Test().doSomething(request, param);
+
+        response.setHeader(""X-XSS-Protection"", ""0"");
+        response.getWriter().write(bar);
+    } // end doPost
+
+    private class Test {
+
+        public String doSomething(HttpServletRequest request, String param)
+                throws ServletException, IOException {
+
+            String bar = org.owasp.esapi.ESAPI.encoder().encodeForHTML(param);
+
+            return bar;
+        }
+    } // end innerclass Test
+} // end DataflowThruInnerClass",safe,79,vulnerable,0.6193285233352539,false_positive
+BenchmarkTest00170,"import java.io.IOException;
+import javax.servlet.ServletException;
+import javax.servlet.annotation.WebServlet;
+import javax.servlet.http.HttpServlet;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+
+@WebServlet(value = ""/case/BenchmarkCase"")
+public class BenchmarkCase extends HttpServlet {
+
+    private static final long serialVersionUID = 1L;
+
+    @Override
+    public void doGet(HttpServletRequest request, HttpServletResponse response)
+            throws ServletException, IOException {
+        doPost(request, response);
+    }
+
+    @Override
+    public void doPost(HttpServletRequest request, HttpServletResponse response)
+            throws ServletException, IOException {
+        response.setContentType(""text/html;charset=UTF-8"");
+
+        String param = """";
+        if (request.getHeader(""BenchmarkCase"") != null) {
+            param = request.getHeader(""BenchmarkCase"");
+        }
+ 
+        param = java.net.URLDecoder.decode(param, ""UTF-8"");
+ 
+        String a9823 = param; // assign
+        StringBuilder b9823 = new StringBuilder(a9823); // stick in stringbuilder
+        b9823.append("" SafeStuff""); // append some safe content
+        b9823.replace(
+                b9823.length() - ""Chars"".length(),
+                b9823.length(),
+                ""Chars""); // replace some of the end content
+        java.util.HashMap<String, Object> map9823 = new java.util.HashMap<String, Object>();
+        map9823.put(""key9823"", b9823.toString()); // put in a collection
+        String c9823 = (String) map9823.get(""key9823""); // get it back out
+        String d9823 = c9823.substring(0, c9823.length() - 1); // extract most of it
+        String e9823 =
+                new String(
+                        org.apache.commons.codec.binary.Base64.decodeBase64(
+                                org.apache.commons.codec.binary.Base64.encodeBase64(
+                                        d9823.getBytes()))); // B64 encode and decode it
+        String f9823 = e9823.split("" "")[0]; // split it on a space
+        org.owasp.benchmark.helpers.ThingInterface thing =
+                org.owasp.benchmark.helpers.ThingFactory.createThing();
+        String g9823 = ""barbarians_at_the_gate""; // This is static so this whole flow is 'safe'
+        String bar = thing.doSomething(g9823); // reflection
+
+        byte[] input = new byte[1000];
+        String str = ""?"";
+        Object inputParam = param;
+        if (inputParam instanceof String) str = ((String) inputParam);
+        if (inputParam instanceof java.io.InputStream) {
+            int i = ((java.io.InputStream) inputParam).read(input);
+            if (i == -1) {
+                response.getWriter()
+                        .println(
+                                ""This input source requires a POST, not a GET. Incompatible UI for the InputStream source."");
+                return;
+            }
+            str = new String(input, 0, i);
+        }
+        if ("""".equals(str)) str = ""No cookie value supplied"";
+        javax.servlet.http.Cookie cookie = new javax.servlet.http.Cookie(""SomeCookie"", str);
+
+        cookie.setSecure(false);
+        cookie.setHttpOnly(true);
+        cookie.setPath(request.getRequestURI()); // i.e., set path to JUST this servlet
+ 
+        response.addCookie(cookie);
+
+        response.getWriter()
+                .println(
+                        ""Created cookie: 'SomeCookie': with value: '""
+                                + org.owasp.esapi.ESAPI.encoder().encodeForHTML(str)
+                                + ""' and secure flag set to: false"");
+    }
+}",vulnerable,614,safe,0.2431186430163643,false_negative
+BenchmarkTest02422,"import java.io.IOException;
+import javax.servlet.ServletException;
+import javax.servlet.annotation.WebServlet;
+import javax.servlet.http.HttpServlet;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+
+@WebServlet(value = ""/case/BenchmarkCase"")
+public class BenchmarkCase extends HttpServlet {
+
+    private static final long serialVersionUID = 1L;
+
+    @Override
+    public void doGet(HttpServletRequest request, HttpServletResponse response)
+            throws ServletException, IOException {
+        doPost(request, response);
+    }
+
+    @Override
+    public void doPost(HttpServletRequest request, HttpServletResponse response)
+            throws ServletException, IOException {
+        response.setContentType(""text/html;charset=UTF-8"");
+
+        org.owasp.benchmark.helpers.SeparateClassRequest scr =
+                new org.owasp.benchmark.helpers.SeparateClassRequest(request);
+        String param = scr.getTheParameter(""BenchmarkCase"");
+        if (param == null) param = """";
+
+        String bar = doSomething(request, param);
+
+        double stuff = new java.util.Random().nextGaussian();
+        String rememberMeKey = Double.toString(stuff).substring(2); // Trim off the 0. at the front.
+
+        String user = ""Gayle"";
+        String fullClassName = this.getClass().getName();
+        String testCaseNumber =
+                fullClassName.substring(
+                        fullClassName.lastIndexOf('.') + 1 + ""BenchmarkTest"".length());
+        user += testCaseNumber;
+
+        String cookieName = ""rememberMe"" + testCaseNumber;
+
+        boolean foundUser = false;
+        javax.servlet.http.Cookie[] cookies = request.getCookies();
+        if (cookies != null) {
+            for (int i = 0; !foundUser && i < cookies.length; i++) {
+                javax.servlet.http.Cookie cookie = cookies[i];
+                if (cookieName.equals(cookie.getName())) {
+                    if (cookie.getValue().equals(request.getSession().getAttribute(cookieName))) {
+                        foundUser = true;
+                    }
+                }
+            }
+        }
+
+        if (foundUser) {
+            response.getWriter().println(""Welcome back: "" + user + ""<br/>"");
+        } else {
+            javax.servlet.http.Cookie rememberMe =
+                    new javax.servlet.http.Cookie(cookieName, rememberMeKey);
+            rememberMe.setSecure(true);
+            rememberMe.setHttpOnly(true);
+            rememberMe.setPath(request.getRequestURI()); // i.e., set path to JUST this servlet
+ 
+            request.getSession().setAttribute(cookieName, rememberMeKey);
+            response.addCookie(rememberMe);
+            response.getWriter()
+                    .println(
+                            user
+                                    + "" has been remembered with cookie: ""
+                                    + rememberMe.getName()
+                                    + "" whose value is: ""
+                                    + rememberMe.getValue()
+                                    + ""<br/>"");
+        }
+
+        response.getWriter()
+                .println(""Weak Randomness Test java.util.Random.nextGaussian() executed"");
+    } // end doPost
+
+    private static String doSomething(HttpServletRequest request, String param)
+            throws ServletException, IOException {
+
+        String bar;
+        String guess = ""ABC"";
+        char switchTarget = guess.charAt(1); // condition 'B', which is safe
+ 
+        switch (switchTarget) {
+            case 'A':
+                bar = param;
+                break;
+            case 'B':
+                bar = ""bob"";
+                break;
+            case 'C':
+            case 'D':
+                bar = param;
+                break;
+            default:
+                bar = ""bob's your uncle"";
+                break;
+        }
+
+        return bar;
+    }
+}",vulnerable,330,safe,0.4691484544114794,false_negative
+BenchmarkTest01188,"import java.io.IOException;
+import javax.servlet.ServletException;
+import javax.servlet.annotation.WebServlet;
+import javax.servlet.http.HttpServlet;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+
+@WebServlet(value = ""/case/BenchmarkCase"")
+public class BenchmarkCase extends HttpServlet {
+
+    private static final long serialVersionUID = 1L;
+
+    @Override
+    public void doGet(HttpServletRequest request, HttpServletResponse response)
+            throws ServletException, IOException {
+        doPost(request, response);
+    }
+
+    @Override
+    public void doPost(HttpServletRequest request, HttpServletResponse response)
+            throws ServletException, IOException {
+        response.setContentType(""text/html;charset=UTF-8"");
+
+        String param = """";
+        java.util.Enumeration<String> headers = request.getHeaders(""Referer"");
+
+        if (headers != null && headers.hasMoreElements()) {
+            param = headers.nextElement(); // just grab first element
+        }
+ 
+        param = java.net.URLDecoder.decode(param, ""UTF-8"");
+
+        String bar = new Test().doSomething(request, param);
+
+        response.setHeader(""X-XSS-Protection"", ""0"");
+        response.getWriter().write(""Parameter value: "" + bar);
+    } // end doPost
+
+    private class Test {
+
+        public String doSomething(HttpServletRequest request, String param)
+                throws ServletException, IOException {
+
+            String bar = org.owasp.esapi.ESAPI.encoder().encodeForHTML(param);
+
+            return bar;
+        }
+    } // end innerclass Test
+} // end DataflowThruInnerClass",safe,79,vulnerable,0.6390302188009271,false_positive
+BenchmarkTest02607,"import java.io.IOException;
+import javax.servlet.ServletException;
+import javax.servlet.annotation.WebServlet;
+import javax.servlet.http.HttpServlet;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+
+@WebServlet(value = ""/case/BenchmarkCase"")
+public class BenchmarkCase extends HttpServlet {
+
+    private static final long serialVersionUID = 1L;
+
+    @Override
+    public void doGet(HttpServletRequest request, HttpServletResponse response)
+            throws ServletException, IOException {
+        doPost(request, response);
+    }
+
+    @Override
+    public void doPost(HttpServletRequest request, HttpServletResponse response)
+            throws ServletException, IOException {
+        response.setContentType(""text/html;charset=UTF-8"");
+
+        String queryString = request.getQueryString();
+        String paramval = ""BenchmarkCase"" + ""="";
+        int paramLoc = -1;
+        if (queryString != null) paramLoc = queryString.indexOf(paramval);
+        if (paramLoc == -1) {
+            response.getWriter()
+                    .println(
+                            ""getQueryString() couldn't find expected parameter '""
+                                    + ""BenchmarkCase""
+                                    + ""' in query string."");
+            return;
+        }
+
+        String param =
+                queryString.substring(
+                        paramLoc
+                                + paramval
+                                        .length()); // 1st assume ""BenchmarkCase"" param is last
+ 
+ 
+ 
+        int ampersandLoc = queryString.indexOf(""&"", paramLoc);
+        if (ampersandLoc != -1) {
+            param = queryString.substring(paramLoc + paramval.length(), ampersandLoc);
+        }
+        param = java.net.URLDecoder.decode(param, ""UTF-8"");
+
+        String bar = doSomething(request, param);
+
+        byte[] input = new byte[1000];
+        String str = ""?"";
+        Object inputParam = param;
+        if (inputParam instanceof String) str = ((String) inputParam);
+        if (inputParam instanceof java.io.InputStream) {
+            int i = ((java.io.InputStream) inputParam).read(input);
+            if (i == -1) {
+                response.getWriter()
+                        .println(
+                                ""This input source requires a POST, not a GET. Incompatible UI for the InputStream source."");
+                return;
+            }
+            str = new String(input, 0, i);
+        }
+        if ("""".equals(str)) str = ""No cookie value supplied"";
+        javax.servlet.http.Cookie cookie = new javax.servlet.http.Cookie(""SomeCookie"", str);
+
+        cookie.setSecure(true);
+        cookie.setHttpOnly(true);
+        cookie.setPath(request.getRequestURI()); // i.e., set path to JUST this servlet
+ 
+        response.addCookie(cookie);
+
+        response.getWriter()
+                .println(
+                        ""Created cookie: 'SomeCookie': with value: '""
+                                + org.owasp.esapi.ESAPI.encoder().encodeForHTML(str)
+                                + ""' and secure flag set to: true"");
+    } // end doPost
+
+    private static String doSomething(HttpServletRequest request, String param)
+            throws ServletException, IOException {
+
+        StringBuilder sbxyz75490 = new StringBuilder(param);
+        String bar = sbxyz75490.append(""_SafeStuff"").toString();
+
+        return bar;
+    }
+}",safe,614,vulnerable,0.6213541843167396,false_positive
+BenchmarkTest00899,"import java.io.IOException;
+import javax.servlet.ServletException;
+import javax.servlet.annotation.WebServlet;
+import javax.servlet.http.HttpServlet;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+
+@WebServlet(value = ""/case/BenchmarkCase"")
+public class BenchmarkCase extends HttpServlet {
+
+    private static final long serialVersionUID = 1L;
+
+    @Override
+    public void doGet(HttpServletRequest request, HttpServletResponse response)
+            throws ServletException, IOException {
+        doPost(request, response);
+    }
+
+    @Override
+    public void doPost(HttpServletRequest request, HttpServletResponse response)
+            throws ServletException, IOException {
+        response.setContentType(""text/html;charset=UTF-8"");
+
+        org.owasp.benchmark.helpers.SeparateClassRequest scr =
+                new org.owasp.benchmark.helpers.SeparateClassRequest(request);
+        String param = scr.getTheValue(""BenchmarkCase"");
+
+        String bar;
+        String guess = ""ABC"";
+        char switchTarget = guess.charAt(1); // condition 'B', which is safe
+ 
+        switch (switchTarget) {
+            case 'A':
+                bar = param;
+                break;
+            case 'B':
+                bar = ""bob"";
+                break;
+            case 'C':
+            case 'D':
+                bar = param;
+                break;
+            default:
+                bar = ""bob's your uncle"";
+                break;
+        }
+
+        double value = new java.util.Random().nextDouble();
+        String rememberMeKey = Double.toString(value).substring(2); // Trim off the 0. at the front.
+
+        String user = ""Donna"";
+        String fullClassName = this.getClass().getName();
+        String testCaseNumber =
+                fullClassName.substring(
+                        fullClassName.lastIndexOf('.') + 1 + ""BenchmarkTest"".length());
+        user += testCaseNumber;
+
+        String cookieName = ""rememberMe"" + testCaseNumber;
+
+        boolean foundUser = false;
+        javax.servlet.http.Cookie[] cookies = request.getCookies();
+        if (cookies != null) {
+            for (int i = 0; !foundUser && i < cookies.length; i++) {
+                javax.servlet.http.Cookie cookie = cookies[i];
+                if (cookieName.equals(cookie.getName())) {
+                    if (cookie.getValue().equals(request.getSession().getAttribute(cookieName))) {
+                        foundUser = true;
+                    }
+                }
+            }
+        }
+
+        if (foundUser) {
+            response.getWriter().println(""Welcome back: "" + user + ""<br/>"");
+        } else {
+            javax.servlet.http.Cookie rememberMe =
+                    new javax.servlet.http.Cookie(cookieName, rememberMeKey);
+            rememberMe.setSecure(true);
+            rememberMe.setHttpOnly(true);
+            rememberMe.setDomain(new java.net.URL(request.getRequestURL().toString()).getHost());
+            rememberMe.setPath(request.getRequestURI()); // i.e., set path to JUST this servlet
+ 
+            request.getSession().setAttribute(cookieName, rememberMeKey);
+            response.addCookie(rememberMe);
+            response.getWriter()
+                    .println(
+                            user
+                                    + "" has been remembered with cookie: ""
+                                    + rememberMe.getName()
+                                    + "" whose value is: ""
+                                    + rememberMe.getValue()
+                                    + ""<br/>"");
+        }
+
+        response.getWriter().println(""Weak Randomness Test java.util.Random.nextDouble() executed"");
+    }
+}",vulnerable,330,safe,0.3621652175327222,false_negative
