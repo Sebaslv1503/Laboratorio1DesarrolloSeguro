@@ -1,3 +1,4 @@
+import json
 from pathlib import Path
 import sys
 import unittest
@@ -16,13 +17,28 @@ class VULNMINERTests(unittest.TestCase):
         self.assertEqual(len(OWASP_2025), 10)
         self.assertEqual(len(API_2023), 10)
 
-    def test_sample_minimums_and_traceability(self):
+    def test_sample_minimums_multilanguage_and_traceability(self):
         data = pd.read_csv(ROOT / "data/vulnerabilities.csv")
         self.assertGreaterEqual(len(data), 500)
         self.assertGreaterEqual((data.label == "safe").sum(), 100)
         self.assertTrue(data.synthetic.notna().all())
-        self.assertIn("synthetic-controlled", set(data.provenance))
-        self.assertGreaterEqual(data[data.provenance == "OWASP Benchmark Java 1.2"].shape[0], 500)
+        non_synth = data[~data.synthetic.astype(str).str.lower().isin(["true", "1"])]
+        lang_counts = non_synth["language"].value_counts()
+        substantial_langs = [lang for lang, n in lang_counts.items() if lang in {"Java", "Python", "JavaScript", "TypeScript"} and n >= 50]
+        self.assertGreaterEqual(len(substantial_langs), 2)
+
+    def test_evaluated_coverage_meets_pdf_minimums(self):
+        assessment = json.loads((ROOT / "reports/assessment.json").read_text(encoding="utf-8"))
+        self.assertGreaterEqual(len(assessment["evaluated_owasp"]), 5)
+        self.assertGreaterEqual(len(assessment["evaluated_api"]), 4)
+        self.assertEqual(
+            set(assessment["evaluated_owasp"]) | set(assessment["not_evaluated_owasp"]),
+            set(OWASP_2025),
+        )
+        self.assertEqual(
+            set(assessment["evaluated_api"]) | set(assessment["not_evaluated_api"]),
+            set(API_2023),
+        )
 
     def test_evidence_reports_line_and_cwe(self):
         code = "def get():\n    return os.system(request.args['cmd'])\n"
@@ -36,7 +52,14 @@ class VULNMINERTests(unittest.TestCase):
         self.assertGreaterEqual(report["summary"]["microservices"], 2)
         self.assertEqual(report["summary"]["files_analyzed"], 4)
         self.assertGreater(report["summary"]["potential_findings"], 0)
-        self.assertTrue(all(item["status"].endswith("review_required") or item["status"] == "requires_manual_review" for item in report["findings"]))
+        self.assertIn("category_coverage", report)
+        self.assertTrue(
+            all(
+                item["status"].endswith("review_required")
+                or item["status"] == "requires_manual_review"
+                for item in report["findings"]
+            )
+        )
 
 
 if __name__ == "__main__":

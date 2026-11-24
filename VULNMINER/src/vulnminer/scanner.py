@@ -33,6 +33,8 @@ EVIDENCE = {
     "unsafe_deserialization": (502, "Deserialización de datos no confiables potencialmente riesgosa"),
     "debug_enabled": (16, "Configuración de depuración, CORS o exposición amplia observada"),
     "external_request": (918, "Solicitud saliente con destino variable observada"),
+    "insecure_tls": (295, "Validación de certificados TLS deshabilitada"),
+    "hardcoded_secret": (798, "Credencial, secreto o clave potencialmente embebida en el código"),
     "owner_check": (639, "Comprobación de propietario/autorización observada"),
     "auth_check": (287, "Control de autenticación/autorización mencionado"),
     "resource_limit": (770, "Límite de recursos o tiempo observado"),
@@ -104,8 +106,16 @@ def prediction_vector(model, text: str) -> tuple[list[str], list[float]]:
 
 def _multilabel(model, code: str, classes: list[str], threshold: float) -> list[dict]:
     probabilities = model.predict_proba([code])[0]
-    return [{"code": category, "name": (API_2023 if category.startswith("API") else OWASP_2025).get(category, category), "confidence": float(prob)}
-            for category, prob in zip(classes, probabilities) if float(prob) >= threshold]
+    predicted = [
+        {
+            "code": category,
+            "name": (API_2023 if category.startswith("API") else OWASP_2025).get(category, category),
+            "confidence": float(prob),
+        }
+        for category, prob in zip(classes, probabilities)
+        if float(prob) >= threshold
+    ]
+    return sorted(predicted, key=lambda x: -x["confidence"])
 
 
 def classify_chunk(bundle: dict, chunk: str) -> tuple[float, list[dict], list[dict]]:
@@ -158,11 +168,12 @@ def scan(root: Path, model_path: Path, standards: set[str] | None = None, output
             if "api2023" not in standards:
                 api = []
             assigned = bool(owasp or api)
-            category_names = [x["name"] for x in owasp + api]
-            key = f"{rel}:{location}:{','.join(x['code'] for x in owasp + api)}"
+            combined = sorted(owasp + api, key=lambda x: -x["confidence"])
+            category_names = [x["name"] for x in combined]
+            key = f"{rel}:{location}:{','.join(x['code'] for x in combined)}"
             finding_id = hashlib.sha1(key.encode()).hexdigest()[:12].upper()
-            severity = "high" if any(x["code"] in {"A01:2025", "A04:2025", "A05:2025", "API1:2023", "API2:2023", "API5:2023", "API7:2023"} for x in owasp + api) else "medium"
-            recommendations = list(dict.fromkeys(REMEDIATION[x["code"]] for x in owasp + api))
+            severity = "high" if any(x["code"] in {"A01:2025", "A04:2025", "A05:2025", "A07:2025", "API1:2023", "API2:2023", "API5:2023", "API7:2023"} for x in combined) else "medium"
+            recommendations = list(dict.fromkeys(REMEDIATION[x["code"]] for x in combined))
             findings.append({
                 "id": finding_id,
                 "microservice": service,
@@ -174,13 +185,23 @@ def scan(root: Path, model_path: Path, standards: set[str] | None = None, output
                 "owasp_top10_2025": owasp,
                 "owasp_api_2023": api,
                 "confidence": round(vuln_probability, 4),
-                "category_confidence": round(max((x["confidence"] for x in owasp + api), default=0.0), 4),
+                "category_confidence": round(max((x["confidence"] for x in combined), default=0.0), 4),
                 "severity_estimate": severity,
                 "severity_basis": "Estimación didáctica basada en categorías predichas; no es CVSS ni la probabilidad del modelo.",
                 "recommendations": recommendations or ["Revisar manualmente el contexto del código y validar la ruta de datos."],
                 "status": "requires_manual_review" if assigned else "unclassified_review_required",
                 "classification_basis": "Modelo supervisado aplicado a contexto alrededor de una señal estática; la señal solo aporta evidencia y ubicación.",
             })
+    eval_owasp = bundle.get("evaluated_owasp", bundle.get("owasp_classes", []))
+    not_eval_owasp = bundle.get("not_evaluated_owasp", [c for c in OWASP_2025 if c not in eval_owasp])
+    eval_api = bundle.get("evaluated_api", bundle.get("api_classes", []))
+    not_eval_api = bundle.get("not_evaluated_api", [c for c in API_2023 if c not in eval_api])
+    support_notice = (
+        f"OWASP Top 10:2025 evaluadas ({len(eval_owasp)}/10): {', '.join(eval_owasp) or 'ninguna'} | "
+        f"No evaluadas: {', '.join(not_eval_owasp) or 'ninguna'}. "
+        f"OWASP API Security 2023 evaluadas ({len(eval_api)}/10): {', '.join(eval_api) or 'ninguna'} | "
+        f"No evaluadas: {', '.join(not_eval_api) or 'ninguna'}."
+    )
     return {
         "tool": "VULNMINER",
         "version": "0.1.0",
@@ -188,7 +209,11 @@ def scan(root: Path, model_path: Path, standards: set[str] | None = None, output
         "project_root": str(root),
         "standards": sorted(standards),
         "summary": {"microservices": len(services), "files_analyzed": len(files), "potential_findings": len(findings)},
-        "support_notice": "OWASP 2025: evaluación pública disponible para A01, A02, A04, A05 y A08. OWASP API: evidencia pública solo API8. Otras etiquetas tuvieron entrenamiento sintético controlado y requieren validación manual; no implican cobertura validada.",
+        "category_coverage": {
+            "owasp_top10_2025": {"evaluated": eval_owasp, "not_evaluated": not_eval_owasp},
+            "owasp_api_2023": {"evaluated": eval_api, "not_evaluated": not_eval_api},
+        },
+        "support_notice": support_notice,
         "findings": findings,
     }
 

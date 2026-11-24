@@ -20,8 +20,10 @@ SIGNALS = {
     "weak_crypto": r"(?i)\b(md5|sha-?1|des|rc4|ecb)\b",
     "safe_crypto": r"(?i)\b(argon2|bcrypt|scrypt|sha-?256|sha-?512|aes/gcm)\b",
     "unsafe_deserialization": r"(?i)(pickle\.loads|ObjectInputStream|yaml\.load\s*\(|readObject\s*\()",
-    "debug_enabled": r"(?i)(debug\s*=\s*true|DEBUG\s*:\s*true|exposure\.include\s*=\s*\*|allowallorigins|origin\s*:\s*['\"]\*['\"])",
-    "external_request": r"(?i)(requests\.(get|post|request)|fetch\s*\(|openConnection\s*\(|axios\.(get|post))",
+    "debug_enabled": r"(?i)(debug\s*=\s*true|DEBUG\s*:\s*true|exposure\.include\s*=\s*\*|allowallorigins|origin\s*:\s*['\"]\*['\"]|privileged\s*:\s*true|user\s+root\b)",
+    "external_request": r"(?i)(requests\.(get|post|request)|fetch\s*\(|openConnection\s*\(|axios\.(get|post)|urllib\.request)",
+    "insecure_tls": r"(?i)(verify\s*=\s*false|rejectunauthorized\s*:\s*false|insecure_skip_verify|trustallcerts)",
+    "hardcoded_secret": r"(?i)(password|secret|api_?key|jwt_?secret|token)\s*[:=]\s*['\"][^'\"]{6,}['\"]",
     "owner_check": r"(?i)(owner_?id|findByOwner|current_user\.id|principal\.getName|authorize|isAuthorized)",
     "auth_check": r"(?i)(authenticate|verifyToken|jwt\.verify|hasRole|isAuthenticated|@PreAuthorize)",
     "resource_limit": r"(?i)(rate.?limit|max.?content.?length|timeout\s*=|maxRequestSize|throttle)",
@@ -31,13 +33,23 @@ SIGNALS = {
     "security_logging": r"(?i)(audit|security.?event|logger\.(warn|error|info)|logging\.(warning|error|critical))",
 }
 
+_COMPILED_SIGNALS = [
+    (name, re.compile(pattern.replace("(?i)", "").lower(), re.ASCII))
+    for name, pattern in SIGNALS.items()
+]
+_HTTP_ENDPOINT_RE = re.compile(
+    r"(@app\.(get|post|put|delete)|@(get|post|put|delete)mapping|router\.(get|post|put|delete)|app\.(get|post|put|delete))",
+    re.ASCII,
+)
+
 
 def pattern_features(texts):
     output = []
     for text in texts:
-        flags = {name: float(bool(re.search(pattern, text))) for name, pattern in SIGNALS.items()}
-        flags["line_count"] = min(text.count("\n") / 100, 1.0)
-        flags["has_http_endpoint"] = float(bool(re.search(r"(?i)(@app\.(get|post|put|delete)|@(Get|Post|Put|Delete)Mapping|router\.(get|post|put|delete)|app\.(get|post|put|delete))", text)))
+        lowered = text.lower()
+        flags = {name: float(bool(rx.search(lowered))) for name, rx in _COMPILED_SIGNALS}
+        flags["line_count"] = min(lowered.count("\n") / 100, 1.0)
+        flags["has_http_endpoint"] = float(bool(_HTTP_ENDPOINT_RE.search(lowered)))
         output.append(flags)
     return output
 

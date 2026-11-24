@@ -1,8 +1,8 @@
 {
   "tool": "VULNMINER",
   "version": "0.1.0",
-  "generated_at": "2026-11-24T06:12:35.792715+00:00",
-  "project_root": "D:\\ESPE 7\\DesarrolloSeguro\\U2\\Laboratorio1\\VULNMINER\\examples\\demo-microservices",
+  "generated_at": "2026-11-24T13:59:20.967795+00:00",
+  "project_root": "/home/eluce/Projects/uni/SoftwareSeguro/Proyecto1/Laboratorio1DesarrolloSeguro/VULNMINER/examples/demo-microservices",
   "standards": [
     "api2023",
     "owasp2025"
@@ -12,15 +12,49 @@
     "files_analyzed": 4,
     "potential_findings": 6
   },
-  "support_notice": "OWASP 2025: evaluación pública disponible para A01, A02, A04, A05 y A08. OWASP API: evidencia pública solo API8. Otras etiquetas tuvieron entrenamiento sintético controlado y requieren validación manual; no implican cobertura validada.",
+  "category_coverage": {
+    "owasp_top10_2025": {
+      "evaluated": [
+        "A01:2025",
+        "A02:2025",
+        "A04:2025",
+        "A05:2025",
+        "A07:2025",
+        "A08:2025"
+      ],
+      "not_evaluated": [
+        "A03:2025",
+        "A06:2025",
+        "A09:2025",
+        "A10:2025"
+      ]
+    },
+    "owasp_api_2023": {
+      "evaluated": [
+        "API10:2023",
+        "API2:2023",
+        "API3:2023",
+        "API7:2023",
+        "API8:2023"
+      ],
+      "not_evaluated": [
+        "API1:2023",
+        "API4:2023",
+        "API5:2023",
+        "API6:2023",
+        "API9:2023"
+      ]
+    }
+  },
+  "support_notice": "OWASP Top 10:2025 evaluadas (6/10): A01:2025, A02:2025, A04:2025, A05:2025, A07:2025, A08:2025 | No evaluadas: A03:2025, A06:2025, A09:2025, A10:2025. OWASP API Security 2023 evaluadas (5/10): API10:2023, API2:2023, API3:2023, API7:2023, API8:2023 | No evaluadas: API1:2023, API4:2023, API5:2023, API6:2023, API9:2023.",
   "findings": [
     {
-      "id": "088B1CA62FB7",
+      "id": "40D97215299F",
       "microservice": "api-gateway",
       "file": "api-gateway/src/proxy.js",
       "language": "JavaScript",
       "line": 3,
-      "problem": "Broken Access Control",
+      "problem": "Server Side Request Forgery",
       "evidence": {
         "description": "Solicitud saliente con destino variable observada",
         "line_excerpt": "const response = await fetch(req.query.target);",
@@ -30,41 +64,29 @@
         {
           "code": "A01:2025",
           "name": "Broken Access Control",
-          "confidence": 0.7806519608949958
-        },
-        {
-          "code": "A08:2025",
-          "name": "Software or Data Integrity Failures",
-          "confidence": 0.5952288524991514
+          "confidence": 0.9122094564314681
         }
       ],
       "owasp_api_2023": [
         {
-          "code": "API10:2023",
-          "name": "Unsafe Consumption of APIs",
-          "confidence": 0.8838241367342996
-        },
-        {
           "code": "API7:2023",
           "name": "Server Side Request Forgery",
-          "confidence": 0.9676893906351814
+          "confidence": 0.9741369442472557
         }
       ],
-      "confidence": 0.8557,
-      "category_confidence": 0.9677,
+      "confidence": 0.7568,
+      "category_confidence": 0.9741,
       "severity_estimate": "high",
       "severity_basis": "Estimación didáctica basada en categorías predichas; no es CVSS ni la probabilidad del modelo.",
       "recommendations": [
-        "Aplicar autorización en servidor para cada recurso y normalizar rutas antes de usarlas.",
-        "Validar integridad y confianza de datos, artefactos y resultados de deserialización.",
-        "Validar respuestas de terceros y proteger la comunicación, formatos y límites.",
-        "Restringir destinos salientes con allowlists y bloquear redes internas sensibles."
+        "Restringir destinos salientes con allowlists y bloquear redes internas sensibles.",
+        "Aplicar autorización en servidor para cada recurso y normalizar rutas antes de usarlas."
       ],
       "status": "requires_manual_review",
       "classification_basis": "Modelo supervisado aplicado a contexto alrededor de una señal estática; la señal solo aporta evidencia y ubicación."
     },
     {
-      "id": "395202FE7399",
+      "id": "B58ECE6475F1",
       "microservice": "api-gateway",
       "file": "api-gateway/src/proxy.js",
       "language": "JavaScript",
@@ -79,74 +101,42 @@
         {
           "code": "A01:2025",
           "name": "Broken Access Control",
-          "confidence": 0.8660476715616581
-        },
-        {
-          "code": "A06:2025",
-          "name": "Insecure Design",
-          "confidence": 0.5706877950357231
+          "confidence": 0.45137833775990244
         }
       ],
-      "owasp_api_2023": [
-        {
-          "code": "API3:2023",
-          "name": "Broken Object Property Level Authorization",
-          "confidence": 0.9844528198865078
-        },
-        {
-          "code": "API6:2023",
-          "name": "Unrestricted Access to Sensitive Business Flows",
-          "confidence": 0.5706877950357231
-        }
-      ],
-      "confidence": 0.8801,
-      "category_confidence": 0.9845,
+      "owasp_api_2023": [],
+      "confidence": 0.6689,
+      "category_confidence": 0.4514,
       "severity_estimate": "high",
       "severity_basis": "Estimación didáctica basada en categorías predichas; no es CVSS ni la probabilidad del modelo.",
       "recommendations": [
-        "Aplicar autorización en servidor para cada recurso y normalizar rutas antes de usarlas.",
-        "Revisar los flujos y controles desde el diseño con requisitos de seguridad explícitos.",
-        "Usar esquemas de entrada/salida explícitos y autorizar cada propiedad sensible.",
-        "Proteger flujos sensibles con límites de negocio y controles de abuso."
+        "Aplicar autorización en servidor para cada recurso y normalizar rutas antes de usarlas."
       ],
       "status": "requires_manual_review",
       "classification_basis": "Modelo supervisado aplicado a contexto alrededor de una señal estática; la señal solo aporta evidencia y ubicación."
     },
     {
-      "id": "6FB6650CF77D",
+      "id": "08E017C82539",
       "microservice": "user-service",
       "file": "user-service/app.py",
       "language": "Python",
       "line": 5,
-      "problem": "Security Misconfiguration",
+      "problem": "Patrón potencial para revisión manual",
       "evidence": {
         "description": "Configuración de depuración, CORS o exposición amplia observada",
         "line_excerpt": "DEBUG = True",
         "cwe": "CWE-16"
       },
-      "owasp_top10_2025": [
-        {
-          "code": "A02:2025",
-          "name": "Security Misconfiguration",
-          "confidence": 0.6897170553644684
-        }
-      ],
-      "owasp_api_2023": [
-        {
-          "code": "API8:2023",
-          "name": "Security Misconfiguration",
-          "confidence": 0.6897170553644684
-        }
-      ],
-      "confidence": 0.7905,
-      "category_confidence": 0.6897,
+      "owasp_top10_2025": [],
+      "owasp_api_2023": [],
+      "confidence": 0.6393,
+      "category_confidence": 0.0,
       "severity_estimate": "medium",
       "severity_basis": "Estimación didáctica basada en categorías predichas; no es CVSS ni la probabilidad del modelo.",
       "recommendations": [
-        "Endurecer configuración, limitar orígenes y desactivar opciones de depuración en despliegues.",
-        "Aplicar configuración segura y desactivar funcionalidades expuestas innecesarias."
+        "Revisar manualmente el contexto del código y validar la ruta de datos."
       ],
-      "status": "requires_manual_review",
+      "status": "unclassified_review_required",
       "classification_basis": "Modelo supervisado aplicado a contexto alrededor de una señal estática; la señal solo aporta evidencia y ubicación."
     },
     {
@@ -165,12 +155,12 @@
         {
           "code": "A05:2025",
           "name": "Injection",
-          "confidence": 0.8353535787210511
+          "confidence": 0.9577095312049964
         }
       ],
       "owasp_api_2023": [],
-      "confidence": 0.7036,
-      "category_confidence": 0.8354,
+      "confidence": 0.5939,
+      "category_confidence": 0.9577,
       "severity_estimate": "high",
       "severity_basis": "Estimación didáctica basada en categorías predichas; no es CVSS ni la probabilidad del modelo.",
       "recommendations": [
@@ -180,7 +170,7 @@
       "classification_basis": "Modelo supervisado aplicado a contexto alrededor de una señal estática; la señal solo aporta evidencia y ubicación."
     },
     {
-      "id": "1DECA2221964",
+      "id": "3CC0CFE9FB8B",
       "microservice": "user-service",
       "file": "user-service/app.py",
       "language": "Python",
@@ -195,40 +185,27 @@
         {
           "code": "A04:2025",
           "name": "Cryptographic Failures",
-          "confidence": 0.527751205846714
-        },
-        {
-          "code": "A06:2025",
-          "name": "Insecure Design",
-          "confidence": 0.45541218799689903
+          "confidence": 0.9766564814116812
         }
       ],
-      "owasp_api_2023": [
-        {
-          "code": "API6:2023",
-          "name": "Unrestricted Access to Sensitive Business Flows",
-          "confidence": 0.45541218799689903
-        }
-      ],
-      "confidence": 0.9947,
-      "category_confidence": 0.5278,
+      "owasp_api_2023": [],
+      "confidence": 0.9714,
+      "category_confidence": 0.9767,
       "severity_estimate": "high",
       "severity_basis": "Estimación didáctica basada en categorías predichas; no es CVSS ni la probabilidad del modelo.",
       "recommendations": [
-        "Usar primitivas criptográficas modernas y gestionar secretos fuera del código.",
-        "Revisar los flujos y controles desde el diseño con requisitos de seguridad explícitos.",
-        "Proteger flujos sensibles con límites de negocio y controles de abuso."
+        "Usar primitivas criptográficas modernas y gestionar secretos fuera del código."
       ],
       "status": "requires_manual_review",
       "classification_basis": "Modelo supervisado aplicado a contexto alrededor de una señal estática; la señal solo aporta evidencia y ubicación."
     },
     {
-      "id": "D031819FFC97",
+      "id": "F7BEAEDC8E8F",
       "microservice": "user-service",
       "file": "user-service/app.py",
       "language": "Python",
       "line": 18,
-      "problem": "Insecure Design",
+      "problem": "Software or Data Integrity Failures",
       "evidence": {
         "description": "Deserialización de datos no confiables potencialmente riesgosa",
         "line_excerpt": "return pickle.loads(payload)",
@@ -236,31 +213,18 @@
       },
       "owasp_top10_2025": [
         {
-          "code": "A06:2025",
-          "name": "Insecure Design",
-          "confidence": 0.5359855860666045
-        },
-        {
           "code": "A08:2025",
           "name": "Software or Data Integrity Failures",
-          "confidence": 0.7518184774563188
+          "confidence": 0.9580111837194005
         }
       ],
-      "owasp_api_2023": [
-        {
-          "code": "API6:2023",
-          "name": "Unrestricted Access to Sensitive Business Flows",
-          "confidence": 0.5359855860666045
-        }
-      ],
-      "confidence": 0.6997,
-      "category_confidence": 0.7518,
+      "owasp_api_2023": [],
+      "confidence": 0.8223,
+      "category_confidence": 0.958,
       "severity_estimate": "medium",
       "severity_basis": "Estimación didáctica basada en categorías predichas; no es CVSS ni la probabilidad del modelo.",
       "recommendations": [
-        "Revisar los flujos y controles desde el diseño con requisitos de seguridad explícitos.",
-        "Validar integridad y confianza de datos, artefactos y resultados de deserialización.",
-        "Proteger flujos sensibles con límites de negocio y controles de abuso."
+        "Validar integridad y confianza de datos, artefactos y resultados de deserialización."
       ],
       "status": "requires_manual_review",
       "classification_basis": "Modelo supervisado aplicado a contexto alrededor de una señal estática; la señal solo aporta evidencia y ubicación."

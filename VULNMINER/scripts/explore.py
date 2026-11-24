@@ -13,12 +13,12 @@ ROOT = Path(__file__).resolve().parents[1]
 def explore(dataset: Path = ROOT / "data/vulnerabilities.csv", reports: Path = ROOT / "reports") -> dict:
     data = pd.read_csv(dataset).fillna("")
     reports.mkdir(parents=True, exist_ok=True)
-    public = data[data["provenance"] == "OWASP Benchmark Java 1.2"]
-    non_synthetic = data[data["synthetic"].astype(str).str.lower().isin(["false", "0"]) ]
+    non_synthetic = data[data["synthetic"].astype(str).str.lower().isin(["false", "0"])]
+    public = non_synthetic[non_synthetic["provenance"] != "Dataset profesor (muestra deduplicada)"]
     stats = {
         "records": int(len(data)),
-        "benchmark_records": int(len(public)),
-        "teacher_records": int(len(data) - len(public) - int(data["synthetic"].astype(str).str.lower().isin(["true", "1"]).sum())),
+        "public_records": int(len(public)),
+        "teacher_records": int((data["provenance"] == "Dataset profesor (muestra deduplicada)").sum()),
         "non_synthetic_records": int(len(non_synthetic)),
         "synthetic_records": int(data["synthetic"].astype(str).str.lower().isin(["true", "1"]).sum()),
         "duplicates_exact": int(data.duplicated(["code", "label", "cwe"]).sum()),

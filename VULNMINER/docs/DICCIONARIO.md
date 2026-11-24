@@ -2,16 +2,16 @@
 
 | Campo | Tipo | Significado |
 |---|---|---|
-| `record_id` | texto | Identificador derivado del contenido normalizado, CWE y etiqueta. |
-| `code` | texto | Código o configuración de muestra. |
-| `language` | texto | Lenguaje reconocido o `mixed` para casos sintéticos controlados. |
-| `label` | categoría | `vulnerable` o `safe`, según Benchmark, docente o etiqueta manual explícita. |
-| `cwe` | entero/texto | Identificador CWE asociado; en ejemplos seguros conserva la familia de control comparada. |
-| `owasp_categories` | lista separada por `;` | Categorías candidatas OWASP Top 10:2025 derivadas de la tabla orientativa CWE-OWASP. Vacío para `safe`. |
-| `api_categories` | lista separada por `;` | Categorías candidatas API Security Top 10:2023 derivadas de la tabla orientativa. Vacío si no hay mapeo. |
-| `provenance` | texto | `OWASP Benchmark Java 1.2`, `Dataset profesor (muestra deduplicada)` o `synthetic-controlled`. |
-| `source_id` | texto | Nombre del caso upstream o identificador de muestra sintética/docente. |
-| `split_group` | texto | Grupo/fuente para auditoría de particiones; la separación actual reserva archivos Benchmark completos. |
-| `synthetic` | booleano | Indica si el fragmento fue escrito como control sintético. |
+| `record_id` | texto | Identificador SHA-256 truncado derivado del código normalizado, CWE principal y etiqueta. |
+| `code` | texto | Fragmento de código fuente o archivo de configuración limpio (sin comentarios de anotación). |
+| `language` | texto | Lenguaje o tipo de archivo: `Java`, `Python`, `JavaScript`, `TypeScript` o `Configuration`. |
+| `label` | categoría | `vulnerable` o `safe`, según la fuente original. |
+| `cwe` | entero/texto | Identificador CWE principal asociado al caso. |
+| `owasp_categories` | lista separada por `;` | Categorías OWASP Top 10:2025 derivadas de la tabla documentada CWE–OWASP (`docs/CWE_OWASP.md`). Vacío para `safe`. |
+| `api_categories` | lista separada por `;` | Categorías OWASP API Security Top 10:2023 derivadas de la tabla documentada. Vacío si no aplica o para `safe`. |
+| `provenance` | texto | Fuente de origen: `OWASP Benchmark Java 1.2`, `OWASP Benchmark Python 0.1`, `Semgrep Community Rules`, `Dataset profesor (muestra deduplicada)` o `synthetic-controlled`. |
+| `source_id` | texto | Identificador trazable del archivo y línea o caso upstream. |
+| `split_group` | texto | Clave de agrupación por archivo de caso/regla para garantizar particiones train/validation/test sin fuga de información. |
+| `synthetic` | booleano | Indica si el ejemplo fue redactado como caso controlado (`true`: solo se usa en entrenamiento, nunca en prueba). |
 
-No se interpretan los mapeos CWE-OWASP como relación oficial única. Una CWE puede asociarse a más de una categoría según contexto y versión del estándar.
+Las correspondencias CWE–OWASP son orientativas y documentadas; una misma debilidad CWE puede corresponder simultáneamente a ambos estándares OWASP.

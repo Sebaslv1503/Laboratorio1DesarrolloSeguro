@@ -1,220 +1,815 @@
 {
-  "dataset": "data\\vulnerabilities.csv",
-  "public_benchmark_records": 2736,
-  "synthetic_training_records": 70,
+  "dataset": "data/vulnerabilities.csv",
+  "public_records": 7202,
+  "public_by_provenance": {
+    "Semgrep Community Rules": 3236,
+    "OWASP Benchmark Java 1.2": 2736,
+    "OWASP Benchmark Python 0.1": 1230
+  },
+  "public_by_language": {
+    "Java": 3395,
+    "Python": 2757,
+    "JavaScript": 704,
+    "Configuration": 259,
+    "TypeScript": 87
+  },
+  "synthetic_training_records": 9,
   "teacher_training_records": 10,
-  "train_public_records": 1915,
-  "validation_public_records": 410,
-  "test_public_records": 411,
-  "split": "70/15/15 estratificado por etiqueta; validation selecciona el algoritmo; test solo OWASP Benchmark Java 1.2; el proyecto de origen es el mismo y la extrapolación externa no queda demostrada",
+  "train_public_records": 5060,
+  "validation_public_records": 1096,
+  "test_public_records": 1046,
+  "test_languages": {
+    "Java": 499,
+    "Python": 408,
+    "JavaScript": 105,
+    "Configuration": 31,
+    "TypeScript": 3
+  },
+  "split": "70/15/15 estratificado por fuente/lenguaje/categoría y agrupado por split_group (cero fuga de archivos de regla o casos entre train, validation y test); muestras sintéticas y del docente solo en entrenamiento.",
   "seed": 42,
   "comparison": {
     "logistic_regression": {
-      "accuracy": 0.948780487804878,
-      "precision_macro": 0.9497119223505224,
-      "recall_macro": 0.9481370306842005,
-      "f1_macro": 0.9486457631263457,
-      "precision_vulnerable": 0.9360730593607306,
-      "recall_vulnerable": 0.9669811320754716,
-      "f1_vulnerable": 0.951276102088167,
+      "accuracy": 0.8403284671532847,
+      "precision_macro": 0.8384926155821918,
+      "recall_macro": 0.8404613174829032,
+      "f1_macro": 0.8392200748573895,
+      "precision_vulnerable": 0.8664383561643836,
+      "recall_vulnerable": 0.8391376451077943,
+      "f1_vulnerable": 0.8525695029486099,
       "confusion_matrix_labels_safe_vulnerable": [
         [
-          184,
-          14
+          415,
+          78
         ],
         [
-          7,
-          205
+          97,
+          506
         ]
       ],
       "classification_report": {
         "safe": {
-          "precision": 0.9633507853403142,
-          "recall": 0.9292929292929293,
-          "f1-score": 0.9460154241645244,
-          "support": 198.0
+          "precision": 0.810546875,
+          "recall": 0.8417849898580122,
+          "f1-score": 0.8258706467661692,
+          "support": 493.0
         },
         "vulnerable": {
-          "precision": 0.9360730593607306,
-          "recall": 0.9669811320754716,
-          "f1-score": 0.951276102088167,
-          "support": 212.0
+          "precision": 0.8664383561643836,
+          "recall": 0.8391376451077943,
+          "f1-score": 0.8525695029486099,
+          "support": 603.0
         },
-        "accuracy": 0.948780487804878,
+        "accuracy": 0.8403284671532847,
         "macro avg": {
-          "precision": 0.9497119223505224,
-          "recall": 0.9481370306842005,
-          "f1-score": 0.9486457631263457,
-          "support": 410.0
+          "precision": 0.8384926155821918,
+          "recall": 0.8404613174829032,
+          "f1-score": 0.8392200748573895,
+          "support": 1096.0
         },
         "weighted avg": {
-          "precision": 0.9492462050777002,
-          "recall": 0.948780487804878,
-          "f1-score": 0.9487355795787006,
-          "support": 410.0
+          "precision": 0.8412973888158058,
+          "recall": 0.8403284671532847,
+          "f1-score": 0.8405598897205594,
+          "support": 1096.0
         }
       }
     },
     "complement_nb": {
-      "accuracy": 0.7219512195121951,
-      "precision_macro": 0.7225375144286263,
-      "recall_macro": 0.7204593100819516,
-      "f1_macro": 0.7206483540127662,
-      "precision_vulnerable": 0.7168141592920354,
-      "recall_vulnerable": 0.7641509433962265,
-      "f1_vulnerable": 0.7397260273972602,
+      "accuracy": 0.7052919708029197,
+      "precision_macro": 0.7038013163766176,
+      "recall_macro": 0.6966502847493432,
+      "f1_macro": 0.6979389492096675,
+      "precision_vulnerable": 0.7108433734939759,
+      "recall_vulnerable": 0.7827529021558872,
+      "f1_vulnerable": 0.745067087608524,
       "confusion_matrix_labels_safe_vulnerable": [
         [
-          134,
-          64
+          301,
+          192
         ],
         [
-          50,
-          162
+          131,
+          472
         ]
       ],
       "classification_report": {
         "safe": {
-          "precision": 0.7282608695652174,
-          "recall": 0.6767676767676768,
-          "f1-score": 0.7015706806282722,
-          "support": 198.0
+          "precision": 0.6967592592592593,
+          "recall": 0.6105476673427992,
+          "f1-score": 0.6508108108108108,
+          "support": 493.0
         },
         "vulnerable": {
-          "precision": 0.7168141592920354,
-          "recall": 0.7641509433962265,
-          "f1-score": 0.7397260273972602,
-          "support": 212.0
+          "precision": 0.7108433734939759,
+          "recall": 0.7827529021558872,
+          "f1-score": 0.745067087608524,
+          "support": 603.0
         },
-        "accuracy": 0.7219512195121951,
+        "accuracy": 0.7052919708029197,
         "macro avg": {
-          "precision": 0.7225375144286263,
-          "recall": 0.7204593100819516,
-          "f1-score": 0.7206483540127662,
-          "support": 410.0
+          "precision": 0.7038013163766176,
+          "recall": 0.6966502847493432,
+          "f1-score": 0.6979389492096675,
+          "support": 1096.0
         },
         "weighted avg": {
-          "precision": 0.7223420827898158,
-          "recall": 0.7219512195121951,
-          "f1-score": 0.7212997867624807,
-          "support": 410.0
+          "precision": 0.7045080921821919,
+          "recall": 0.7052919708029197,
+          "f1-score": 0.7026689631000637,
+          "support": 1096.0
         }
       }
     }
   },
   "selected_binary_model": "logistic_regression",
   "binary_test": {
-    "accuracy": 0.9586374695863747,
-    "precision_macro": 0.9586673940889037,
-    "recall_macro": 0.9584933845497225,
-    "f1_macro": 0.9585746894732161,
-    "precision_vulnerable": 0.9579439252336449,
-    "recall_vulnerable": 0.9624413145539906,
-    "f1_vulnerable": 0.9601873536299765,
+    "accuracy": 0.847036328871893,
+    "precision_macro": 0.8469744275944098,
+    "recall_macro": 0.8440586761020197,
+    "f1_macro": 0.845197572887376,
+    "precision_vulnerable": 0.847457627118644,
+    "recall_vulnerable": 0.8771929824561403,
+    "f1_vulnerable": 0.8620689655172413,
     "confusion_matrix_labels_safe_vulnerable": [
       [
-        189,
-        9
+        386,
+        90
       ],
       [
-        8,
-        205
+        70,
+        500
       ]
     ],
     "classification_report": {
       "safe": {
-        "precision": 0.9593908629441624,
-        "recall": 0.9545454545454546,
-        "f1-score": 0.9569620253164557,
-        "support": 198.0
+        "precision": 0.8464912280701754,
+        "recall": 0.8109243697478992,
+        "f1-score": 0.8283261802575107,
+        "support": 476.0
       },
       "vulnerable": {
-        "precision": 0.9579439252336449,
-        "recall": 0.9624413145539906,
-        "f1-score": 0.9601873536299765,
-        "support": 213.0
+        "precision": 0.847457627118644,
+        "recall": 0.8771929824561403,
+        "f1-score": 0.8620689655172413,
+        "support": 570.0
       },
-      "accuracy": 0.9586374695863747,
+      "accuracy": 0.847036328871893,
       "macro avg": {
-        "precision": 0.9586673940889037,
-        "recall": 0.9584933845497225,
-        "f1-score": 0.9585746894732161,
-        "support": 411.0
+        "precision": 0.8469744275944098,
+        "recall": 0.8440586761020197,
+        "f1-score": 0.845197572887376,
+        "support": 1046.0
       },
       "weighted avg": {
-        "precision": 0.958640990116084,
-        "recall": 0.9586374695863747,
-        "f1-score": 0.9586335458293023,
-        "support": 411.0
+        "precision": 0.8470178508786144,
+        "recall": 0.847036328871893,
+        "f1-score": 0.8467137401026794,
+        "support": 1046.0
+      }
+    }
+  },
+  "binary_test_by_language": {
+    "Configuration": {
+      "support": 31,
+      "accuracy": 0.5483870967741935,
+      "precision_macro": 0.45535714285714285,
+      "recall_macro": 0.46590909090909094,
+      "f1_macro": 0.452020202020202,
+      "precision_vulnerable": 0.625,
+      "recall_vulnerable": 0.75,
+      "f1_vulnerable": 0.6818181818181818,
+      "confusion_matrix_labels_safe_vulnerable": [
+        [
+          2,
+          9
+        ],
+        [
+          5,
+          15
+        ]
+      ],
+      "classification_report": {
+        "safe": {
+          "precision": 0.2857142857142857,
+          "recall": 0.18181818181818182,
+          "f1-score": 0.2222222222222222,
+          "support": 11.0
+        },
+        "vulnerable": {
+          "precision": 0.625,
+          "recall": 0.75,
+          "f1-score": 0.6818181818181818,
+          "support": 20.0
+        },
+        "accuracy": 0.5483870967741935,
+        "macro avg": {
+          "precision": 0.45535714285714285,
+          "recall": 0.46590909090909094,
+          "f1-score": 0.452020202020202,
+          "support": 31.0
+        },
+        "weighted avg": {
+          "precision": 0.5046082949308756,
+          "recall": 0.5483870967741935,
+          "f1-score": 0.5187357445421961,
+          "support": 31.0
+        }
+      }
+    },
+    "Java": {
+      "support": 499,
+      "accuracy": 0.9258517034068137,
+      "precision_macro": 0.9269646413529662,
+      "recall_macro": 0.9236039129308111,
+      "f1_macro": 0.9249730784078671,
+      "precision_vulnerable": 0.9181494661921709,
+      "recall_vulnerable": 0.9485294117647058,
+      "f1_vulnerable": 0.9330922242314648,
+      "confusion_matrix_labels_safe_vulnerable": [
+        [
+          204,
+          23
+        ],
+        [
+          14,
+          258
+        ]
+      ],
+      "classification_report": {
+        "safe": {
+          "precision": 0.9357798165137615,
+          "recall": 0.8986784140969163,
+          "f1-score": 0.9168539325842696,
+          "support": 227.0
+        },
+        "vulnerable": {
+          "precision": 0.9181494661921709,
+          "recall": 0.9485294117647058,
+          "f1-score": 0.9330922242314648,
+          "support": 272.0
+        },
+        "accuracy": 0.9258517034068137,
+        "macro avg": {
+          "precision": 0.9269646413529662,
+          "recall": 0.9236039129308111,
+          "f1-score": 0.9249730784078671,
+          "support": 499.0
+        },
+        "weighted avg": {
+          "precision": 0.926169685677143,
+          "recall": 0.9258517034068137,
+          "f1-score": 0.9257052659069892,
+          "support": 499.0
+        }
+      }
+    },
+    "JavaScript": {
+      "support": 105,
+      "accuracy": 0.6952380952380952,
+      "precision_macro": 0.6751207729468599,
+      "recall_macro": 0.6673076923076924,
+      "f1_macro": 0.6700706991358995,
+      "precision_vulnerable": 0.7391304347826086,
+      "recall_vulnerable": 0.7846153846153846,
+      "f1_vulnerable": 0.7611940298507462,
+      "confusion_matrix_labels_safe_vulnerable": [
+        [
+          22,
+          18
+        ],
+        [
+          14,
+          51
+        ]
+      ],
+      "classification_report": {
+        "safe": {
+          "precision": 0.6111111111111112,
+          "recall": 0.55,
+          "f1-score": 0.5789473684210527,
+          "support": 40.0
+        },
+        "vulnerable": {
+          "precision": 0.7391304347826086,
+          "recall": 0.7846153846153846,
+          "f1-score": 0.7611940298507462,
+          "support": 65.0
+        },
+        "accuracy": 0.6952380952380952,
+        "macro avg": {
+          "precision": 0.6751207729468599,
+          "recall": 0.6673076923076924,
+          "f1-score": 0.6700706991358995,
+          "support": 105.0
+        },
+        "weighted avg": {
+          "precision": 0.6903611686220381,
+          "recall": 0.6952380952380952,
+          "f1-score": 0.691766730258482,
+          "support": 105.0
+        }
+      }
+    },
+    "Python": {
+      "support": 408,
+      "accuracy": 0.8112745098039216,
+      "precision_macro": 0.8112314915131816,
+      "recall_macro": 0.8108946608946609,
+      "f1_macro": 0.8110190749463122,
+      "precision_vulnerable": 0.812206572769953,
+      "recall_vulnerable": 0.8238095238095238,
+      "f1_vulnerable": 0.817966903073286,
+      "confusion_matrix_labels_safe_vulnerable": [
+        [
+          158,
+          40
+        ],
+        [
+          37,
+          173
+        ]
+      ],
+      "classification_report": {
+        "safe": {
+          "precision": 0.8102564102564103,
+          "recall": 0.797979797979798,
+          "f1-score": 0.8040712468193384,
+          "support": 198.0
+        },
+        "vulnerable": {
+          "precision": 0.812206572769953,
+          "recall": 0.8238095238095238,
+          "f1-score": 0.817966903073286,
+          "support": 210.0
+        },
+        "accuracy": 0.8112745098039216,
+        "macro avg": {
+          "precision": 0.8112314915131816,
+          "recall": 0.8108946608946609,
+          "f1-score": 0.8110190749463122,
+          "support": 408.0
+        },
+        "weighted avg": {
+          "precision": 0.8112601703736749,
+          "recall": 0.8112745098039216,
+          "f1-score": 0.8112234228323997,
+          "support": 408.0
+        }
+      }
+    },
+    "TypeScript": {
+      "support": 3,
+      "accuracy": 1.0,
+      "precision_macro": 1.0,
+      "recall_macro": 1.0,
+      "f1_macro": 1.0,
+      "precision_vulnerable": 1.0,
+      "recall_vulnerable": 1.0,
+      "f1_vulnerable": 1.0,
+      "confusion_matrix_labels_safe_vulnerable": [
+        [
+          0,
+          0
+        ],
+        [
+          0,
+          3
+        ]
+      ],
+      "classification_report": {
+        "safe": {
+          "precision": 0.0,
+          "recall": 0.0,
+          "f1-score": 0.0,
+          "support": 0.0
+        },
+        "vulnerable": {
+          "precision": 1.0,
+          "recall": 1.0,
+          "f1-score": 1.0,
+          "support": 3.0
+        },
+        "accuracy": 1.0,
+        "macro avg": {
+          "precision": 0.5,
+          "recall": 0.5,
+          "f1-score": 0.5,
+          "support": 3.0
+        },
+        "weighted avg": {
+          "precision": 1.0,
+          "recall": 1.0,
+          "f1-score": 1.0,
+          "support": 3.0
+        }
+      }
+    }
+  },
+  "binary_test_by_provenance": {
+    "OWASP Benchmark Java 1.2": {
+      "support": 409,
+      "accuracy": 0.9559902200488998,
+      "precision_macro": 0.9558612440191387,
+      "recall_macro": 0.9561012973335248,
+      "f1_macro": 0.9559583632447954,
+      "precision_vulnerable": 0.9617224880382775,
+      "recall_vulnerable": 0.95260663507109,
+      "f1_vulnerable": 0.9571428571428572,
+      "confusion_matrix_labels_safe_vulnerable": [
+        [
+          190,
+          8
+        ],
+        [
+          10,
+          201
+        ]
+      ],
+      "classification_report": {
+        "safe": {
+          "precision": 0.95,
+          "recall": 0.9595959595959596,
+          "f1-score": 0.9547738693467337,
+          "support": 198.0
+        },
+        "vulnerable": {
+          "precision": 0.9617224880382775,
+          "recall": 0.95260663507109,
+          "f1-score": 0.9571428571428572,
+          "support": 211.0
+        },
+        "accuracy": 0.9559902200488998,
+        "macro avg": {
+          "precision": 0.9558612440191387,
+          "recall": 0.9561012973335248,
+          "f1-score": 0.9559583632447954,
+          "support": 409.0
+        },
+        "weighted avg": {
+          "precision": 0.9560475427287936,
+          "recall": 0.9559902200488998,
+          "f1-score": 0.9559960121951004,
+          "support": 409.0
+        }
+      }
+    },
+    "OWASP Benchmark Python 0.1": {
+      "support": 183,
+      "accuracy": 0.8633879781420765,
+      "precision_macro": 0.8703193033381713,
+      "recall_macro": 0.8304195804195804,
+      "f1_macro": 0.8443506957438847,
+      "precision_vulnerable": 0.8867924528301887,
+      "recall_vulnerable": 0.7121212121212122,
+      "f1_vulnerable": 0.7899159663865546,
+      "confusion_matrix_labels_safe_vulnerable": [
+        [
+          111,
+          6
+        ],
+        [
+          19,
+          47
+        ]
+      ],
+      "classification_report": {
+        "safe": {
+          "precision": 0.8538461538461538,
+          "recall": 0.9487179487179487,
+          "f1-score": 0.8987854251012146,
+          "support": 117.0
+        },
+        "vulnerable": {
+          "precision": 0.8867924528301887,
+          "recall": 0.7121212121212122,
+          "f1-score": 0.7899159663865546,
+          "support": 66.0
+        },
+        "accuracy": 0.8633879781420765,
+        "macro avg": {
+          "precision": 0.8703193033381713,
+          "recall": 0.8304195804195804,
+          "f1-score": 0.8443506957438847,
+          "support": 183.0
+        },
+        "weighted avg": {
+          "precision": 0.8657284256108877,
+          "recall": 0.8633879781420765,
+          "f1-score": 0.8595210301549437,
+          "support": 183.0
+        }
+      }
+    },
+    "Semgrep Community Rules": {
+      "support": 454,
+      "accuracy": 0.7422907488986784,
+      "precision_macro": 0.721447928765002,
+      "recall_macro": 0.6940092849723358,
+      "f1_macro": 0.701964348836035,
+      "precision_vulnerable": 0.7682926829268293,
+      "recall_vulnerable": 0.8600682593856656,
+      "f1_vulnerable": 0.8115942028985508,
+      "confusion_matrix_labels_safe_vulnerable": [
+        [
+          85,
+          76
+        ],
+        [
+          41,
+          252
+        ]
+      ],
+      "classification_report": {
+        "safe": {
+          "precision": 0.6746031746031746,
+          "recall": 0.5279503105590062,
+          "f1-score": 0.5923344947735192,
+          "support": 161.0
+        },
+        "vulnerable": {
+          "precision": 0.7682926829268293,
+          "recall": 0.8600682593856656,
+          "f1-score": 0.8115942028985508,
+          "support": 293.0
+        },
+        "accuracy": 0.7422907488986784,
+        "macro avg": {
+          "precision": 0.721447928765002,
+          "recall": 0.6940092849723358,
+          "f1-score": 0.701964348836035,
+          "support": 454.0
+        },
+        "weighted avg": {
+          "precision": 0.7350679894464143,
+          "recall": 0.7422907488986784,
+          "f1-score": 0.7338391081669867,
+          "support": 454.0
+        }
       }
     }
   },
   "owasp_multilabel_test": {
-    "precision_micro": 1.0,
-    "recall_micro": 1.0,
-    "f1_micro": 1.0,
-    "f1_macro_active": 1.0,
-    "exact_match": 1.0,
+    "precision_micro": 0.8509933774834437,
+    "recall_micro": 0.9017543859649123,
+    "f1_micro": 0.8756388415672913,
+    "f1_macro_active": 0.7880636711618733,
+    "exact_match": 0.8315789473684211,
     "per_category": {
       "A01:2025": {
-        "precision": 1.0,
-        "recall": 1.0,
-        "f1-score": 1.0,
-        "support": 12
+        "precision": 0.6631578947368421,
+        "recall": 0.8076923076923077,
+        "f1-score": 0.7283236994219653,
+        "support": 78
       },
       "A02:2025": {
-        "precision": 1.0,
-        "recall": 1.0,
-        "f1-score": 1.0,
-        "support": 7
+        "precision": 0.6428571428571429,
+        "recall": 0.782608695652174,
+        "f1-score": 0.7058823529411765,
+        "support": 23
       },
       "A04:2025": {
-        "precision": 1.0,
-        "recall": 1.0,
-        "f1-score": 1.0,
-        "support": 68
+        "precision": 0.9705882352941176,
+        "recall": 0.9361702127659575,
+        "f1-score": 0.9530685920577617,
+        "support": 141
       },
       "A05:2025": {
-        "precision": 1.0,
-        "recall": 1.0,
-        "f1-score": 1.0,
-        "support": 107
+        "precision": 0.8892508143322475,
+        "recall": 0.9446366782006921,
+        "f1-score": 0.9161073825503355,
+        "support": 289
+      },
+      "A07:2025": {
+        "precision": 0.5,
+        "recall": 0.8333333333333334,
+        "f1-score": 0.625,
+        "support": 12
       },
       "A08:2025": {
         "precision": 1.0,
-        "recall": 1.0,
-        "f1-score": 1.0,
-        "support": 19
+        "recall": 0.6666666666666666,
+        "f1-score": 0.8,
+        "support": 27
       }
     }
   },
   "api_multilabel_test": {
-    "precision_micro": 1.0,
-    "recall_micro": 1.0,
-    "f1_micro": 1.0,
-    "f1_macro_active": 1.0,
-    "exact_match": 1.0,
+    "precision_micro": 0.5694444444444444,
+    "recall_micro": 0.6507936507936508,
+    "f1_micro": 0.6074074074074074,
+    "f1_macro_active": 0.5469674400409256,
+    "exact_match": 0.9122807017543859,
     "per_category": {
-      "API8:2023": {
+      "API10:2023": {
         "precision": 1.0,
-        "recall": 1.0,
-        "f1-score": 1.0,
-        "support": 7
+        "recall": 0.5,
+        "f1-score": 0.6666666666666666,
+        "support": 6
+      },
+      "API2:2023": {
+        "precision": 0.5,
+        "recall": 0.8333333333333334,
+        "f1-score": 0.625,
+        "support": 12
+      },
+      "API3:2023": {
+        "precision": 0.07692307692307693,
+        "recall": 0.16666666666666666,
+        "f1-score": 0.10526315789473684,
+        "support": 6
+      },
+      "API7:2023": {
+        "precision": 0.6,
+        "recall": 0.5,
+        "f1-score": 0.5454545454545454,
+        "support": 12
+      },
+      "API8:2023": {
+        "precision": 0.8076923076923077,
+        "recall": 0.7777777777777778,
+        "f1-score": 0.7924528301886793,
+        "support": 27
       }
     }
   },
   "category_threshold": 0.4,
+  "evaluated_owasp": [
+    "A01:2025",
+    "A02:2025",
+    "A04:2025",
+    "A05:2025",
+    "A07:2025",
+    "A08:2025"
+  ],
+  "not_evaluated_owasp": [
+    "A03:2025",
+    "A06:2025",
+    "A09:2025",
+    "A10:2025"
+  ],
+  "evaluated_api": [
+    "API10:2023",
+    "API2:2023",
+    "API3:2023",
+    "API7:2023",
+    "API8:2023"
+  ],
+  "not_evaluated_api": [
+    "API1:2023",
+    "API4:2023",
+    "API5:2023",
+    "API6:2023",
+    "API9:2023"
+  ],
+  "owasp_category_status": {
+    "A01:2025": {
+      "name": "Broken Access Control",
+      "status": "evaluada",
+      "train_public_support": 430,
+      "test_public_support": 78
+    },
+    "A02:2025": {
+      "name": "Security Misconfiguration",
+      "status": "evaluada",
+      "train_public_support": 191,
+      "test_public_support": 23
+    },
+    "A03:2025": {
+      "name": "Software Supply Chain Failures",
+      "status": "no evaluada",
+      "train_public_support": 15,
+      "test_public_support": 0,
+      "reason": "Soporte público insuficiente (train=15 < 15 o test=0 < 3); requiere datos adicionales o revisión contextual/dinámica."
+    },
+    "A04:2025": {
+      "name": "Cryptographic Failures",
+      "status": "evaluada",
+      "train_public_support": 821,
+      "test_public_support": 141
+    },
+    "A05:2025": {
+      "name": "Injection",
+      "status": "evaluada",
+      "train_public_support": 1616,
+      "test_public_support": 289
+    },
+    "A06:2025": {
+      "name": "Insecure Design",
+      "status": "no evaluada",
+      "train_public_support": 0,
+      "test_public_support": 0,
+      "reason": "Soporte público insuficiente (train=0 < 15 o test=0 < 3); requiere datos adicionales o revisión contextual/dinámica."
+    },
+    "A07:2025": {
+      "name": "Authentication Failures",
+      "status": "evaluada",
+      "train_public_support": 81,
+      "test_public_support": 12
+    },
+    "A08:2025": {
+      "name": "Software or Data Integrity Failures",
+      "status": "evaluada",
+      "train_public_support": 169,
+      "test_public_support": 27
+    },
+    "A09:2025": {
+      "name": "Security Logging and Alerting Failures",
+      "status": "no evaluada",
+      "train_public_support": 0,
+      "test_public_support": 0,
+      "reason": "Soporte público insuficiente (train=0 < 15 o test=0 < 3); requiere datos adicionales o revisión contextual/dinámica."
+    },
+    "A10:2025": {
+      "name": "Mishandling of Exceptional Conditions",
+      "status": "no evaluada",
+      "train_public_support": 1,
+      "test_public_support": 0,
+      "reason": "Soporte público insuficiente (train=1 < 15 o test=0 < 3); requiere datos adicionales o revisión contextual/dinámica."
+    }
+  },
+  "api_category_status": {
+    "API1:2023": {
+      "name": "Broken Object Level Authorization",
+      "status": "no evaluada",
+      "train_public_support": 3,
+      "test_public_support": 0,
+      "reason": "Soporte público insuficiente (train=3 < 15 o test=0 < 3); requiere datos adicionales o revisión contextual/dinámica."
+    },
+    "API2:2023": {
+      "name": "Broken Authentication",
+      "status": "evaluada",
+      "train_public_support": 81,
+      "test_public_support": 12
+    },
+    "API3:2023": {
+      "name": "Broken Object Property Level Authorization",
+      "status": "evaluada",
+      "train_public_support": 32,
+      "test_public_support": 6
+    },
+    "API4:2023": {
+      "name": "Unrestricted Resource Consumption",
+      "status": "no evaluada",
+      "train_public_support": 19,
+      "test_public_support": 0,
+      "reason": "Soporte público insuficiente (train=19 < 15 o test=0 < 3); requiere datos adicionales o revisión contextual/dinámica."
+    },
+    "API5:2023": {
+      "name": "Broken Function Level Authorization",
+      "status": "no evaluada",
+      "train_public_support": 3,
+      "test_public_support": 0,
+      "reason": "Soporte público insuficiente (train=3 < 15 o test=0 < 3); requiere datos adicionales o revisión contextual/dinámica."
+    },
+    "API6:2023": {
+      "name": "Unrestricted Access to Sensitive Business Flows",
+      "status": "no evaluada",
+      "train_public_support": 0,
+      "test_public_support": 0,
+      "reason": "Soporte público insuficiente (train=0 < 15 o test=0 < 3); requiere datos adicionales o revisión contextual/dinámica."
+    },
+    "API7:2023": {
+      "name": "Server Side Request Forgery",
+      "status": "evaluada",
+      "train_public_support": 87,
+      "test_public_support": 12
+    },
+    "API8:2023": {
+      "name": "Security Misconfiguration",
+      "status": "evaluada",
+      "train_public_support": 189,
+      "test_public_support": 27
+    },
+    "API9:2023": {
+      "name": "Improper Inventory Management",
+      "status": "no evaluada",
+      "train_public_support": 0,
+      "test_public_support": 0,
+      "reason": "Soporte público insuficiente (train=0 < 15 o test=0 < 3); requiere datos adicionales o revisión contextual/dinámica."
+    },
+    "API10:2023": {
+      "name": "Unsafe Consumption of APIs",
+      "status": "evaluada",
+      "train_public_support": 41,
+      "test_public_support": 6
+    }
+  },
   "owasp_public_test_support": {
-    "A01:2025": 12,
-    "A02:2025": 7,
-    "A04:2025": 68,
-    "A05:2025": 107,
-    "A08:2025": 19
+    "A01:2025": 78,
+    "A02:2025": 23,
+    "A04:2025": 141,
+    "A05:2025": 289,
+    "A07:2025": 12,
+    "A08:2025": 27
   },
   "api_public_test_support": {
-    "API8:2023": 7
+    "API10:2023": 6,
+    "API2:2023": 12,
+    "API3:2023": 6,
+    "API7:2023": 12,
+    "API8:2023": 27
   },
-  "limitation": "Las categorías OWASP sin soporte público proceden solo de casos controlados sintéticos y no tienen evaluación independiente. Las etiquetas CWE-OWASP son mapeos curados orientativos, no equivalencias normativas.",
-  "python": "3.14.0",
+  "limitation": "Las categorías declaradas como 'no evaluada' no cuentan con soporte público suficiente o requieren análisis dinámico/contextual y no se asignan automáticamente. Las correspondencias CWE-OWASP son mapeos orientativos documentados.",
+  "python": "3.14.10",
   "scikit_learn": "1.9.1"
 }
